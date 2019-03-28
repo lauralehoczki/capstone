@@ -24,6 +24,10 @@ conn = pymysql.connect(host,user,passwd,db,charset="utf8mb4",cursorclass=pymysql
 # set up the cursor
 c = conn.cursor()
 
+"""
+value and otherValue are the two metrics of interest from each table. Hardcoded for first version. Prompt user input later?
+"""
+
 # create the query (as a string)
 query = '''SELECT M1998.value, M2002.otherValue
            FROM M1998, M2002
