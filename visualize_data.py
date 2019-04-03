@@ -14,26 +14,24 @@ import cgi, cgitb
 cgitb.enable()
 import sys, os
 import codecs
-import pymysql
+import cx_Oracle
 from creds import *
 import plotly.plotly as py
 import plotly.graph_objs as go
 import pandas as pd
 sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
 
-# create a connection to the MySQL database
-conn = pymysql.connect(host,user,passwd,db,charset="utf8mb4",cursorclass=pymysql.cursors.DictCursor)
+# Establish connection to Oracle database
+dsn_tns = cx_Oracle.makedsn('Host Name', 'Port Number', service_name='Service Name')
+conn = cx_Oracle.connect(user=r'User Name', password='Personal Password', dsn=dsn_tns)
 
 # set up the cursor
 c = conn.cursor()
 
-# Query user for the names of the tables they want to analyze
-table1 = input("Enter the name for table 1")
-table2 = input("Enter the name for table 2")
-
 # create the query (as a string)
-query = '''SELECT table1.value, table2.otherValue
-           FROM M1998.table1, M2002.table2
+query = '''SELECT P_052_Quality_measuring_MM_after_joining_with_load, 
+				Q_052_Quality_measuring_MM_after_joining_without_load
+           FROM M052
            '''
 
 # run the query

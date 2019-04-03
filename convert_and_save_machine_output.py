@@ -10,10 +10,9 @@ the following databases: M1998, M2002 and M04
 """
 
 """
-1. Convert DFX into CSV
-2. Save the name of the generated CSV into a variable called new_table
-3. Create the table and populate it with the contents of the CSV file
-4. Run the linear regression right away
+1. Convert DFD into CSV
+2. Save the name of the generated CSV into a variable called new_data
+3. Update the correct table with the contents of the CSV file
 """
 
 # import statements
@@ -21,30 +20,27 @@ import cgi, cgitb
 cgitb.enable()
 import sys, os
 import codecs
-import pymysql
-from creds import *
-import plotly.plotly as py
-import plotly.graph_objs as go
-import pandas as pd
+import cx_Oracle
 sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
 
-# create a connection to the MySQL database
-conn = pymysql.connect(host,user,passwd,db,charset="utf8mb4",cursorclass=pymysql.cursors.DictCursor)
+# Establish connection to Oracle database. Is it okay to hardcode credentials?
+dsn_tns = cx_Oracle.makedsn('Host Name', 'Port Number', service_name='Service Name')
+conn = cx_Oracle.connect(user=r'User Name', password='Personal Password', dsn=dsn_tns)
 
 # set up the cursor
 c = conn.cursor()
 
 # create the query (as a string)
-query = '''CREATE TABLE new_table
-            LOAD DATA INFILE newtable+'.txt' 
-            INTO TABLE new_table 
-            FIELDS TERMINATED BY ',' 
-            LINES TERMINATED BY '\n'
-            IGNORE 1 ROWS;
-           '''
+query = "sqlldr "+user+"/"+pw+"@"+server+" control=loader.ctl"
 
 # run the query
 c.execute(query)
+
+query = ''' load data
+ 			infile '''+new_data+'''.csv'
+ 			into table M06
+ 			fields terminated by ","
+		'''
 
 # close the connection
 conn.close()
