@@ -1,20 +1,36 @@
+import utils
+
 ##############################################################################################################################
 # as specified, the input is a single dfd file
+def parse_event(event):
+    lis = event.split(',')
+    if (len(lis) > 4):
+        return lis[0:4]
+    for i in range(4-len(lis)):
+        lis.append("null")
+    return lis
+
 def dfd_dfb_parsing(dfd_file):
     
     dfb_fields          = [] # the data
     dfd_fields          = [] # the title of data
-    additionnal_fields  = []
+    additionnal_fields  = [] # not sure what this is used for 
+    first_fields        = [] # the first few fields of dfd
+                             # the data is in dfd rather than dfx
     errorcode           = 0
     error               = 0
+    difference          = 0 # the length difference between dfb_fields and dfd_fields
+
     # filetype specifies the associated file type, either dfx or dfb
     # ##########################################################################################
-    #  associated file means the title file
+    # associated file means the title file
     # ##########################################################################################
+
     filetype            = "" 
     #trying to open dfd and dfx or dfb associated file
     try:
         dfd = open(dfd_file, "r", encoding=('latin-1'))
+        # print("dfd_file: ",dfd_file)
     except:
         print("An error occured while trying to open : " + dfd_file)
         errorcode = 1
@@ -60,23 +76,40 @@ def dfd_dfb_parsing(dfd_file):
             line = lines.replace(chr(10),' ')
             # replace '\r' with ' '
             line = line.replace(chr(13),' ')
+            if line[0:2] == "K1":
+                dfd_fields.append(line[0:5])
+                first_fields.append(line[6:-1])
+                difference = difference + 1
             if line[0:5] == "K2002":
                 dfd_fields.append(line)
-            if line[0:5] == "K2004":
-                dfd_fields.append(line)
-            if line[0:5] == "K2142":
-                K2142_FOUND = True
-                dfd_fields.append("datetime")
-                dfd_fields.append("status")
-                dfd_fields.append("MSN")
-                dfd_fields.append("nest")
+                dfd_fields.append("Attribute")
+            if line[0:8] == "K2142/1 ":
+                K2142_1_FOUND = True
+                dfd_fields.append("Date/Time")
+                dfd_fields.append("Event 1")
+                dfd_fields.append("Event 2")
+                dfd_fields.append("Event 3")
+                dfd_fields.append("Event 4")
+                difference = difference + 3
+                # this is only one field in dfx file
+                # and no corresponding field in the dfd file
+                # we split it into 4 in the final csv file
+                # i.e., Event1, Event2, Event3, Event4
+                dfd_fields.append("Batch Number")
+                dfd_fields.append("Nest Number")
 
         #if not found insert it at default position
-        if K2142_FOUND == False:
-            dfd_fields.insert(2,"*datetime")
-            dfd_fields.insert(3,"*status")
-            dfd_fields.insert(4,"*MSN")
-            dfd_fields.insert(5,"*nest")
+        if K2142_1_FOUND == False:
+            dfd_fields.append("Date/Time")
+            dfd_fields.append("Event 1")
+            dfd_fields.append("Event 2")
+            dfd_fields.append("Event 3")
+            dfd_fields.append("Event 4")
+            difference = difference + 3
+            dfd_fields.append("Batch Number")
+            dfd_fields.append("Nest Number")
+
+        # print("first_fields: ",first_fields)
 
         # dfd_fields will look like [("K2002", "K2004", )"K9000/1 ", "datetime", "status", "MSN", "nest"]
 
@@ -100,14 +133,32 @@ def dfd_dfb_parsing(dfd_file):
             tmp = tmp.replace(chr(0x0D),' ')
             # split with 'dc4' (Device Control 4)
             tmp = tmp.split(chr(0x14))
+            if (len(tmp) == 1):
+                continue 
+                # skip the K0097 lines like "K0097/0 b2e1408c-7029-46b4-9a2c-716e3de27458"
+                # those lines are useful only to QsStat softwares
 ##############################################################################################################################
 #       P1 (cont.)
 #       because we didn't do well with the formatting issue
 #       the lengths of dfb_fields and dfd_fields will not match
 ##############################################################################################################################
-            if len(tmp) == len(dfd_fields):
+            # print("len(tmp) = ",len(tmp),"; len(dfd_fields) = ",len(dfd_fields))
+            if len(tmp) + difference == len(dfd_fields):
                 # print("len(tmp) == len(dfd_fields)")
-                dfb_fields.append(tmp)
+                lis = first_fields[:]
+                lis.extend(tmp[0:3])
+                event_lis = parse_event(tmp[3])
+                # print("event_lis: ",event_lis)
+                lis.extend(event_lis)
+                lis.extend(tmp[4:])
+                # if (utils.once == 1):
+                #     utils.once = utils.once + 1
+                #     print(lis)
+                dfb_fields.append(lis)
+##############################################################################################################################
+#       the problem happens because we didn't enter enough info into dfb
+#       the K1*** fields
+##############################################################################################################################
             else:
                 # print("len(tmp) != len(dfd_fields)")
                 additionnal_fields.append(tmp)
@@ -127,32 +178,33 @@ def dfd_dfb_parsing(dfd_file):
         # it's wrong
         # what's expected is something like 2019/03/05
         for i in range(0,len(dfd_fields),1):
-            if dfd_fields[i] == "datetime":
+            if dfd_fields[i] == "Date/Time":
                 for items in dfb_fields:
                     if len(items[i].split('/'))<2:
                         error+=1
                         print("error in datetime : ")
 ##############################################################################################################################
 ##############################################################################################################################
-            if dfd_fields[i] == "status":
+                # no field is called status in our case
+#             if dfd_fields[i] == "status":
+#                 for items in dfb_fields:
+#                     if len(items[i].split(','))<2 and len(items[i])>3:
+#                         error+=1
+#                         print("error in status : ")
+            if dfd_fields[i] == "Batch Number":
                 for items in dfb_fields:
-                    if len(items[i].split(','))<2 and len(items[i])>3:
-                        error+=1
-                        print("error in status : ")
-            if dfd_fields[i] == "MSN":
-                for items in dfb_fields:
-                    if items[i][0:1] != '#':
+                    if items[i][0] != '#':
                         error+=1
                         print("error in MSN : ")
             # removing "Not measured" lines of the file
-            if dfd_fields[i][0:5] == "K2004" and filetype == "dfb":
-                items = 0
-                while items <len(dfb_fields):
-                    if dfb_fields[items][i] == "255":
-                        del(dfb_fields[items])
-                        items = 0
-                    else:
-                        items+=1
+            # if dfd_fields[i][0:5] == "K2004" and filetype == "dfb":
+            #     items = 0
+            #     while items <len(dfb_fields):
+            #         if dfb_fields[items][i] == "255":
+            #             del(dfb_fields[items])
+            #             items = 0
+            #         else:
+            #             items+=1
 ##############################################################################################################################
 ##############################################################################################################################
         if error > 0:

@@ -1,13 +1,4 @@
 ######################################################################################################
-#		imporant question before finishing the parser
-#		can solve problem P1 in parse_dfb_dfd.py
+#		NEW QUESTION: the dfd files have different length
+#		so that the dfd_fields or the final csv files may have different number of columns	
 ######################################################################################################
-1. how the data in dfd correspond to data in dfx
-2. the format of dfx, especially what char is used to seperate different data
-
-
-######################################################################################################
-#		
-#		
-######################################################################################################
-1. 

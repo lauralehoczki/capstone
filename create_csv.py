@@ -11,6 +11,7 @@ import parse_dfb_dfd as parser
 import generate_file_list as file_list
 
 
+
 ##############################################################################################################################
 def find_field_in_dfd (dfd,field_to_find):
     found_field = 9999 #not found code
@@ -22,8 +23,8 @@ def find_field_in_dfd (dfd,field_to_find):
 
 ##############################################################################################################################
 def find_field_in_dfd_MSN_DATETIME(dfd):
-    MSN_pos         = find_field_in_dfd (dfd,"MSN")
-    DATETIME_pos    = find_field_in_dfd (dfd,"datetime")
+    MSN_pos         = find_field_in_dfd (dfd,"Batch Number")
+    DATETIME_pos    = find_field_in_dfd (dfd,"Date/Time")
     return MSN_pos, DATETIME_pos
 
 ##############################################################################################################################
@@ -32,12 +33,15 @@ def posix_time_from_date(date_qs_stat):
     return time.mktime(dt.timetuple())
 
 ##############################################################################################################################
-class STAT_LINE(object):
-    def __init__(self):
-        self.MSN            = 0
-        self.POSIX_TIME     = 0
-        self.DATETIME       = ""
-        self.DATA           = ""
+##############################################################################################################################
+# no need for this object
+##############################################################################################################################
+# class STAT_LINE(object):
+#     def __init__(self):
+#         self.MSN            = 0
+#         self.POSIX_TIME     = 0
+#         self.DATETIME       = ""
+#         self.DATA           = ""
 
 ##############################################################################################################################
 def create_CSV_FULL(machine,module,filetype,part_type):
@@ -58,35 +62,46 @@ def create_CSV_FULL(machine,module,filetype,part_type):
         # parsing dfd / dfb or dfx file and mounting it in Ram
         dfd_fields, dfb_fields, additionnal_fields, error_code, file_errors = parser.dfd_dfb_parsing(files)
         if error_code == 0 and file_errors == 0:
+            # if we are here, there's no error while parsing
             MSN_position, DATETIME_position  = find_field_in_dfd_MSN_DATETIME(dfd_fields)
             if MSN_position!=9999 and DATETIME_position !=9999:
                 for lines in dfb_fields:
-                    tmp             = STAT_LINE()
-                    tmp.MSN         = lines[MSN_position][1:12]
-                    tmp.DATETIME    = lines[DATETIME_position]
-                    tmp.POSIX_TIME  = int(posix_time_from_date(tmp.DATETIME))
-                    tmp.DATA        = lines
-                    DATAS.append(tmp)
+                    # print(dfd_fields)
+                    # print(lines)
+##############################################################################################################################
+# no need for this object
+##############################################################################################################################
+                    # tmp             = STAT_LINE()
+                    # tmp.MSN         = lines[MSN_position][1:12]
+                    # tmp.DATETIME    = lines[DATETIME_position]
+                    # tmp.POSIX_TIME  = int(posix_time_from_date(tmp.DATETIME))
+                    # tmp.DATA        = lines
+                    # DATAS.append(tmp)
+                    DATAS.append(lines)
                     # del tmp
             else:
-                print("Errors occured while parsing : ", files)
+                print("1_Errors occured while parsing : ", files)
         else:
-            print("Errors occured while parsing : ", files)
+            print("2_Errors occured while parsing : ", files)
 
     # generating CSV file
     # after last step we should have a list called DATA containing all the data
     # the following step is trivial, not as important as the last one
     f = open("/Users/bosen/Desktop/"+machine+"_"+module+"_"+part_type+".csv","w")
-    txt = "MSN,DATETIME,POSIX_TIME_LINE,"
-    for i in dfd_fields:
-        txt+= (i+",")
+    txt = ""
+    for titles in dfd_fields:
+        # print("i: ",i)
+        txt+= titles
+        txt+= ","
     f.write(txt+"\n")
-    for i in DATAS:
-        txt = (str(i.MSN)+",")
-        txt+= (i.DATETIME+",")
-        txt+= (str(i.POSIX_TIME)+",")
-        for i in i.DATA:
-            txt+=(i+",")
+    for row in DATAS:
+        # print("i: ",i)
+        # txt = (str(i.MSN)+",")
+        # txt+= (i.DATETIME+",")
+        # txt+= (str(i.POSIX_TIME)+",")
+        txt = ""
+        for fields in row:
+            txt+=(fields+",")
         txt+="\n"
         f.write(txt)     
     f.close()
