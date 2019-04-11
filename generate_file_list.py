@@ -13,6 +13,8 @@ DATA_PATH   = "/Users/bosen/Downloads/Machine_stats/process/Steering/"
 ######### also, the file extensions are different
 ######### we have types of .dfd and .dfx 
 
+import glob
+
 ##############################################################################################################################
 # glob module finds all the pathnames matching a specified pattern
 # for example:
@@ -21,7 +23,7 @@ DATA_PATH   = "/Users/bosen/Downloads/Machine_stats/process/Steering/"
 # >>> glob.glob('*.gif')
 # ['1.gif', 'card.gif']
 # the return of this funtion is a list of file names (fullname) in increasing order
-def retrieve_new_file (machine, module, subdir, part_type):
+def retrieve_new_file(machine, module, subdir, part_type):
     path_list = glob.glob(DATA_PATH+machine+"/"+module+"/"+subdir+"/"+part_type+"/*.dfd")
     # print(path_list)
     # if verify_files_chronologic_order(path_list)!=0:

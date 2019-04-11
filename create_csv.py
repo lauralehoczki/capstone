@@ -3,13 +3,12 @@
 
 import sys
 import os
-import glob
 from datetime import *
 import time
 
 
-import parse_dfb_dfd
-import generate_file_list
+import parse_dfb_dfd as parser
+import generate_file_list as file_list
 
 
 ##############################################################################################################################
@@ -52,12 +51,12 @@ def create_CSV_FULL(machine,module,filetype,part_type):
     #collecting all datas
     DATAS = []
     
-    dfd_filelist = retrieve_new_file(machine,module,filetype,part_type)
+    dfd_filelist = file_list.retrieve_new_file(machine,module,filetype,part_type)
     # print(dfd_filelist)
     # dfd_filelist is a list of file names (fullname) in increasing order
     for files in dfd_filelist:
         # parsing dfd / dfb or dfx file and mounting it in Ram
-        dfd_fields, dfb_fields, additionnal_fields, error_code, file_errors = dfd_dfb_parsing(files)
+        dfd_fields, dfb_fields, additionnal_fields, error_code, file_errors = parser.dfd_dfb_parsing(files)
         if error_code == 0 and file_errors == 0:
             MSN_position, DATETIME_position  = find_field_in_dfd_MSN_DATETIME(dfd_fields)
             if MSN_position!=9999 and DATETIME_position !=9999:
@@ -74,7 +73,9 @@ def create_CSV_FULL(machine,module,filetype,part_type):
         else:
             print("Errors occured while parsing : ", files)
 
-    #generating CSV file
+    # generating CSV file
+    # after last step we should have a list called DATA containing all the data
+    # the following step is trivial, not as important as the last one
     f = open("/Users/bosen/Desktop/"+machine+"_"+module+"_"+part_type+".csv","w")
     txt = "MSN,DATETIME,POSIX_TIME_LINE,"
     for i in dfd_fields:
@@ -108,7 +109,7 @@ def create_CSV_FULL(machine,module,filetype,part_type):
 create_CSV_FULL("M1998","m052","pc","888878")
 create_CSV_FULL("M1998","m052","pc","950273")
 
-# while True:
+# while True: 
 #     print("Start : %s" % time.ctime())
 #     create_CSV_FULL("M1998","m052","pc","888878")
 #     create_CSV_FULL("M1998","m052","pc","950273")

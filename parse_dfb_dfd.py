@@ -2,14 +2,14 @@
 # as specified, the input is a single dfd file
 def dfd_dfb_parsing(dfd_file):
     
-    dfb_fields          = []
-    dfd_fields          = []
+    dfb_fields          = [] # the data
+    dfd_fields          = [] # the title of data
     additionnal_fields  = []
     errorcode           = 0
     error               = 0
     # filetype specifies the associated file type, either dfx or dfb
     # ##########################################################################################
-    #  associated file seems to mean data file
+    #  associated file means the title file
     # ##########################################################################################
     filetype            = "" 
     #trying to open dfd and dfx or dfb associated file
@@ -24,7 +24,7 @@ def dfd_dfb_parsing(dfd_file):
     # file like dfx and dfb contains the column titles of the dfd file
     if errorcode == 0:
         try:
-            dfb = open(dfd_file.split('.')[0]+".dfb","r")
+            dfb = open(dfd_file.split('.')[0]+".dfb","r", encoding=('latin-1'))
             filetype = "dfb"
         except:
             errorcode = 2
@@ -32,7 +32,7 @@ def dfd_dfb_parsing(dfd_file):
         # then let's check whether it's dfx or not
         if errorcode == 2:
             try:
-                dfb = open(dfd_file.split('.')[0]+".dfx","r")
+                dfb = open(dfd_file.split('.')[0]+".dfx","r", encoding=('latin-1'))
                 filetype = "dfx"
                 errorcode = 0
             except:
@@ -45,8 +45,16 @@ def dfd_dfb_parsing(dfd_file):
     # print("The error code is " + str(errorcode))
     # print(dfd)
     if errorcode == 0:
-        K2142_FOUND = False
-        # useful lines extracted from dfd files 
+        K2142_FOUND = False 
+        # the end of a list of titles belonging to a certain part
+        # the dfd files contains titles for parts
+        # even for the same parameter of different parts, e.g., MSN number for part No.4 and No.6
+        # the machine on the production line will save it into differnt titles
+        # for example, MSN_part_4 and MSN_part_6
+        # so each part will have a list of titles in the dfd file
+        # K2142 marks the end of this title list of a certain part
+
+        # to find certain titles from the dfd file
         for lines in dfd:
             # replace '\n' with ' '
             line = lines.replace(chr(10),' ')
@@ -73,7 +81,12 @@ def dfd_dfb_parsing(dfd_file):
         # dfd_fields will look like [("K2002", "K2004", )"K9000/1 ", "datetime", "status", "MSN", "nest"]
 
 ##############################################################################################################################
-#       the problem might be here
+#       P1 --> the problem might be here
+#       while writing the code, I found the there's a difference between the format of 
+#       1). the data files sent to us by MR.Mangonot
+#       2). the files that the Python file is designed to process (the Python file MR.Mangonot sent us)
+
+#       so that we'll have a super long dfd_fields but a short dfb_fields
 ##############################################################################################################################
 
         # lines extracted from dfb according to dfd files
@@ -87,9 +100,16 @@ def dfd_dfb_parsing(dfd_file):
             tmp = tmp.replace(chr(0x0D),' ')
             # split with 'dc4' (Device Control 4)
             tmp = tmp.split(chr(0x14))
+##############################################################################################################################
+#       P1 (cont.)
+#       because we didn't do well with the formatting issue
+#       the lengths of dfb_fields and dfd_fields will not match
+##############################################################################################################################
             if len(tmp) == len(dfd_fields):
+                # print("len(tmp) == len(dfd_fields)")
                 dfb_fields.append(tmp)
             else:
+                # print("len(tmp) != len(dfd_fields)")
                 additionnal_fields.append(tmp)
         dfd.close
         dfb.close
@@ -98,15 +118,22 @@ def dfd_dfb_parsing(dfd_file):
 
 
         # after this step, I collected the fields names from dfd
-        # hopefully they match the fields in dfx
+        # and the data in dfx
+        # hopefully they will match
 
-        #plausibility check based on supposed field description
+        # plausibility check based on supposed field description
+        # that means to check whether we have the correct data in the correct field
+        # for example, if we have #12345678 in datetime field
+        # it's wrong
+        # what's expected is something like 2019/03/05
         for i in range(0,len(dfd_fields),1):
             if dfd_fields[i] == "datetime":
                 for items in dfb_fields:
                     if len(items[i].split('/'))<2:
                         error+=1
                         print("error in datetime : ")
+##############################################################################################################################
+##############################################################################################################################
             if dfd_fields[i] == "status":
                 for items in dfb_fields:
                     if len(items[i].split(','))<2 and len(items[i])>3:
@@ -126,7 +153,8 @@ def dfd_dfb_parsing(dfd_file):
                         items = 0
                     else:
                         items+=1
-                
+##############################################################################################################################
+##############################################################################################################################
         if error > 0:
             errorcode = 4
             print("errors in file parsing : ", str(error))
