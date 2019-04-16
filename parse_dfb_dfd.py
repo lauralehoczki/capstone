@@ -77,11 +77,18 @@ def dfd_dfb_parsing(dfd_file):
             # replace '\r' with ' '
             line = line.replace(chr(13),' ')
             if line[0:2] == "K1":
+                if line[0:5] == "K1222":
+                    # this field doesn't appear in the example file
+                    # plus, some dfx files don't have this field
+                    # so we just discard it
+                    continue
                 dfd_fields.append(line[0:5])
                 first_fields.append(line[6:-1])
                 difference = difference + 1
             if line[0:5] == "K2002":
-                dfd_fields.append(line)
+                index = line.find(' ')
+                dfd_fields.append(line[index+1:])
+                # dfd_fields.append(line)
                 dfd_fields.append("Attribute")
             if line[0:8] == "K2142/1 ":
                 K2142_1_FOUND = True

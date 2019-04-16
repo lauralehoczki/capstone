@@ -25,6 +25,7 @@ import glob
 # the return of this funtion is a list of file names (fullname) in increasing order
 def retrieve_new_file(machine, module, subdir, part_type):
     path_list = glob.glob(DATA_PATH+machine+"/"+module+"/"+subdir+"/"+part_type+"/*.dfd")
+    # path_list = glob.glob(DATA_PATH+machine+"/"+module+"/"+subdir+"/"+part_type+"/19*.dfd")
     # print(path_list)
     # if verify_files_chronologic_order(path_list)!=0:
     #     path_list = []
