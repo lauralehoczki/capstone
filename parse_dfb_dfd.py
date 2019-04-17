@@ -1,15 +1,9 @@
-import utils
+# a utility file written by me
+# containing some useful variables or functions
+# import utils
 
 ##############################################################################################################################
 # as specified, the input is a single dfd file
-def parse_event(event):
-    lis = event.split(',')
-    if (len(lis) > 4):
-        return lis[0:4]
-    for i in range(4-len(lis)):
-        lis.append("null")
-    return lis
-
 def dfd_dfb_parsing(dfd_file):
     
     dfb_fields          = [] # the data
@@ -222,3 +216,11 @@ def dfd_dfb_parsing(dfd_file):
         if errorcode == 2 or errorcode == 3:
             dfd.close           
     return dfd_fields,dfb_fields,additionnal_fields,errorcode,error
+
+def parse_event(event):
+    lis = event.split(',')
+    if (len(lis) > 4):
+        return lis[0:4]
+    for i in range(4-len(lis)):
+        lis.append("null")
+    return lis

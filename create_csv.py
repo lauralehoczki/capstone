@@ -2,9 +2,8 @@
 # a difference with our case is that we don't have the ZG thing in filepath """1546","a33",ZG_from_file[0:6],"pc"""
 
 import sys
-import os
-from datetime import *
 import time
+import threading
 
 
 import parse_dfb_dfd as parser
@@ -48,6 +47,9 @@ def create_CSV_FULL(machine,module,filetype,part_type):
     dfd_fields          = []
     dfb_fields          = []
     additionnal_fields  = []
+    dfd_max_length      = 0
+    # here since dfd files have different lengths
+    # we only want the longest one
 
 
     print("Generating file for "+machine+"/"+module+" for part type: "+part_type)
@@ -124,16 +126,15 @@ def create_CSV_FULL(machine,module,filetype,part_type):
 create_CSV_FULL("M1998","m052","pc","888878")
 create_CSV_FULL("M1998","m052","pc","950273")
 
-# while True: 
+# def main():
+#     threading.Timer(300.0, main).start()
 #     print("Start : %s" % time.ctime())
 #     create_CSV_FULL("M1998","m052","pc","888878")
 #     create_CSV_FULL("M1998","m052","pc","950273")
-#     sleep(3)
-#     # sleep(300)
-#     # do this every 300 seconds
 #     print("End : %s" % time.ctime())
+#     print()
 
-
+# main()
 
 
 
