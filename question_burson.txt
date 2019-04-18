@@ -1,3 +1,12 @@
+
+######################################################################################################
+#		NEW QUESTION: plot generation
+#		-	1. generate a graph in a certain directory (module named seaborn)
+#			2. locate the outliers (it's better to generate a seperate csv file for it)
+######################################################################################################
+
+# SOLVED
+# use the newest version
 ######################################################################################################
 #		NEW QUESTION: the dfd files have different length
 #			so that the dfd_fields or the final csv files may have different number of columns	
@@ -5,11 +14,4 @@
 #			there are at least 4 versions for now
 #			there is a shared subset of fields among these files
 #			though for the same field, its name in different version can be slightly different
-######################################################################################################
-
-
-######################################################################################################
-#		NEW QUESTION: plot generation
-#			1. generate a graph in a certain directory (module named seaborn)
-#			2. locate the outliers (it's better to generate a seperate csv file for it)
 ######################################################################################################
