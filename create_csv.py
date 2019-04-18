@@ -1,5 +1,6 @@
-# ZG means type number
-# a difference with our case is that we don't have the ZG thing in filepath """1546","a33",ZG_from_file[0:6],"pc"""
+# in the original file, ZG means type number
+# a difference with our case is that we don't have the ZG thing in filepath 
+# original function looks like: create_CSV_FULL("1546","a33",ZG_from_file[0:6],"pc")
 
 import sys
 import time
@@ -8,7 +9,6 @@ import threading
 
 import parse_dfb_dfd as parser
 import generate_file_list as file_list
-
 
 
 ##############################################################################################################################
@@ -117,9 +117,6 @@ def create_CSV_FULL(machine,module,filetype,part_type):
 # above is function definitions
 ##############################################################################################################################
 # below is execution
-
-# 1546
-# f = open("part_type_file.txt","r")
 
 # for part_type_from_file in f:
 # DATA_PATH   = "/Users/bosen/Downloads/⁨Machine stats⁩/process⁩/Steering/"

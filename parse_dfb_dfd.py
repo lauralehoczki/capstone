@@ -3,11 +3,16 @@
 # import utils
 
 ##############################################################################################################################
-# as specified, the input is a single dfd file
+# INPUT:    a single dfd file
+# RETURN:   dfd_fields - titles for the data
+#           dfb_fields - data
+#           additionnal_fields - list of data that does't match the title in dfb_fields
+#           errorcode - specifies error type if there's any
+#           error - number of total errors
 def dfd_dfb_parsing(dfd_file):
     
-    dfb_fields          = [] # the data
     dfd_fields          = [] # the title of data
+    dfb_fields          = [] # the data
     additionnal_fields  = [] # not sure what this is used for 
     first_fields        = [] # the first few fields of dfd
                              # the data is in dfd rather than dfx
@@ -215,8 +220,11 @@ def dfd_dfb_parsing(dfd_file):
         # in case dfd file was ok and no dfx and dfb was found
         if errorcode == 2 or errorcode == 3:
             dfd.close           
-    return dfd_fields,dfb_fields,additionnal_fields,errorcode,error
+    return dfd_fields, dfb_fields, additionnal_fields, errorcode, error
 
+##############################################################################################################################
+# INPUT:    a comma seperated string extracted from dfx files, containing event info for up to 4 events
+# RETURN:   a list of values for event 1 though 4
 def parse_event(event):
     lis = event.split(',')
     if (len(lis) > 4):

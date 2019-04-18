@@ -1,49 +1,52 @@
-# path_list = glob.glob("/Users/bosen/Downloads/Machine_stats/process/Steering/M1998/m052/pc/888878/*.dfd")
-
-######### this is something we need to change
-######### our datapath is something like this:
+######### a MacOS datapath is something like:
 ######### ..../process/Steering/M1998/m052/pc/888878/
-######### original datapath is something like this:
-######### DATA_PATH+machine\\module\\subdir\\ZG\\*.dfd
+######### DATA_PATH   = "/Users/bosen/Desktop/Capstone⁩/⁨Machine stats⁩/process⁩/Steering/"
 
-# DATA_PATH   = "C:\\Stats_machine\\DATAS_MACHINES\\m"
-# DATA_PATH   = "/Users/bosen/Desktop/Capstone⁩/⁨Machine stats⁩/process⁩/Steering/"
+######### while a Windows datapath is something like:
+######### DATA_PATH + machine\\module\\subdir\\ZG\\*.dfd
+######### DATA_PATH   = "C:\\Stats_machine\\DATAS_MACHINES\\m"
+
 DATA_PATH   = "/Users/bosen/Downloads/Machine_stats/process/Steering/"
-
-######### also, the file extensions are different
-######### we have types of .dfd and .dfx 
 
 import os
 import glob
 import platform
 import datetime
+
 # variable last_time_stamp should be global in scope
 # recording the last time we dealt with the incoming data
+# even after the program crashes and gets reopened, the value should persist
 last_time_stamp = 0
 
 
 ##############################################################################################################################
-# glob module finds all the pathnames matching a specified pattern
+# glob module finds all pathnames matching a specified pattern
 # for example:
 # >>> glob.glob('./[0-9].*')
 # ['./1.gif', './2.txt']
 # >>> glob.glob('*.gif')
 # ['1.gif', 'card.gif']
-# the return of this funtion is a list of file names (fullname) in increasing order
+# the return type is a list of full file names (including the path) in increasing order
+##############
+# INPUT:	directory information
+# RETURN:	a list of new files in the target directory
+# NOTE:		many of them are old files, we'll have to find the new ones
 def retrieve_new_file(machine, module, subdir, part_type):
-	# get all files in the target directory
-	# however, some of them can be old files, we'll have to find the new ones
+	# path_list_raw = glob.glob("/Users/bosen/Downloads/Machine_stats/process/Steering/M1998/m052/pc/888878/*.dfd")
     path_list_raw = glob.glob(DATA_PATH+machine+"/"+module+"/"+subdir+"/"+part_type+"/*.dfd")
-
-	# to verify whether the files are in chronologic order
-	# what's the point of doing so?
-    # path_list = glob.glob(DATA_PATH+machine+"/"+module+"/"+subdir+"/"+part_type+"/19*.dfd")
+    # path_list_raw = glob.glob(DATA_PATH+machine+"/"+module+"/"+subdir+"/"+part_type+"/19*.dfd")
     # print(path_list)
-    # if verify_files_chronologic_order(path_list)!=0:
-    #     path_list = []
-    #     print("Critical Error files were not chronologically ordered !!!")
+
+    """
+	# to verify whether the files are in chronologic order
+	# this step is included in the original Python file
+	# BUT what's the point of doing so?
+    if verify_files_chronologic_order(path_list)!=0:
+        path_list = []
+        print("Critical Error files were not chronologically ordered !!!")
+    """
     
-    # get the new files
+    # selecting the new files by looking at their creation dates
     path_list = []
     for i in path_list_raw:
     	if (is_new):
@@ -52,20 +55,22 @@ def retrieve_new_file(machine, module, subdir, part_type):
     return path_list
 
 ##############################################################################################################################
-    """
-    os.path.getctime() will give us somehting like this
-            1551348525.5509124
-    this is called a time stamp
-    the bigger the time stamp is, the older the file is
-    so we can locate new files by comparing the time stamp"""
-
     # From Wikipedia
     """
     A timestamp is a sequence of characters or encoded information 
     identifying when a certain event occurred, 
     usually giving date and time of day, 
-    sometimes accurate to a small fraction of a second"""
-
+    sometimes accurate to a small fraction of a second
+    """
+    """
+    os.path.getctime() will give us a time stamp looking like:
+            1551348525.5509124
+    the bigger the time stamp is, the older the file is
+    so we can locate new files by comparing the time stamp
+    """
+# INPUT:	full file name including the path
+# RETURN:	True if it's a new file
+# RETURN:	False otherwise
 def is_new(path_to_file):
 
     print(platform.system())
@@ -81,10 +86,11 @@ def is_new(path_to_file):
             mtime = stat.st_birthtime
             return (mtime < last_time_stamp)
 
+
 ##############################################################################################################################
-# the input is a list of files derived by glob
-# returns 0 if the filenames are in increasing order
-# returns a positive integer otherwise
+# INPUT:	a list of files
+# RETURN:	0 if the filenames are in increasing order
+# RETURN:	a positive integer otherwise
 def verify_files_chronologic_order(filelist):
     errors      = 0
     if len(filelist) > 0:
