@@ -6,6 +6,14 @@
 #			2. locate the outliers (it's better to generate a seperate csv file for it)
 ######################################################################################################
 
+# UNSOLVED
+# linkage file parser
+######################################################################################################
+#		NEW QUESTION: linkage file
+#			1. the linkage file has different format as the data file
+#			2. need a special parser to process it
+######################################################################################################
+
 # SOLVED
 # use the newest version
 ######################################################################################################

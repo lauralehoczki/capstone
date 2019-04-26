@@ -1,7 +1,3 @@
-# import utils
-# a utility file written by me
-# containing some useful variables or functions
-
 #Terminology
 """
 data file: 
@@ -14,6 +10,10 @@ associated file:
 
 
 """
+
+# import utils
+# a utility file written by me
+# containing some useful variables or functions
 
 ##############################################################################################################################
 # INPUT:    a single dfd file

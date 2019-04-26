@@ -106,8 +106,8 @@ def create_CSV_FULL(machine,module,filetype,part_type):
 # create_CSV_FULL("M2002","m04","bd","950111")
 
 # #test m06
-create_CSV_FULL("M2002","m06","pc","944436")
-create_CSV_FULL("M2002","m06","pc","950111")
+# create_CSV_FULL("M2002","m06","pc","944436")
+# create_CSV_FULL("M2002","m06","pc","950111")
 
 
 # MAIN **********************************************
