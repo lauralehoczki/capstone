@@ -22,7 +22,7 @@ associated file:
 #           additionnal_fields  - list of data that does't match the title in dfb_fields
 #           errorcode           - specifies error type if there's any
 #           error               - number of total errors
-def dfd_dfb_parsing(dfd_file):
+def parsing(dfd_file):
     
     # variable defining
     # *********************************************************
@@ -125,33 +125,36 @@ def dfd_dfb_parsing(dfd_file):
                 # but they only appears in the associated file
                 # so each appearance of these data can cause a difference of 1 
                 # in the length of dfd_fields and dfb_fields
-            if line[0:5] == "K2002":
+            if line[0:8] == "K2002/1 ":
                 index = line.find(' ')
                 dfd_fields.append(line[index+1:])
                 # dfd_fields.append(line)
+                dfd_fields.append("Machine_1")
+                dfd_fields.append("Type_1")
                 dfd_fields.append("Attribute")
+                difference = difference + 2
             if line[0:8] == "K2001/2 ":
                 K2142_1_FOUND = True
                 dfd_fields.append("Date/Time")
-                dfd_fields.append("Event 1")
-                dfd_fields.append("Event 2")
-                dfd_fields.append("Event 3")
-                dfd_fields.append("Event 4")
-                difference = difference + 3
+                dfd_fields.append("Event")
                 # this is only one field in dfx file
                 # and no corresponding field in the dfd file
                 # we split it into 4 in the final csv file
                 # i.e., Event1, Event2, Event3, Event4
                 dfd_fields.append("Batch Number")
                 dfd_fields.append("Nest Number")
+            if line[0:8] == "K2002/2 ":
+                index = line.find(' ')
+                dfd_fields.append(line[index+1:])
+                # dfd_fields.append(line)
+                dfd_fields.append("Machine_2")
+                dfd_fields.append("Type_2")
+                dfd_fields.append("Attribute")
+                difference = difference + 2
         #if not found insert it at the end
         if K2142_1_FOUND == False:
             dfd_fields.append("Date/Time")
-            dfd_fields.append("Event 1")
-            dfd_fields.append("Event 2")
-            dfd_fields.append("Event 3")
-            dfd_fields.append("Event 4")
-            difference = difference + 3
+            dfd_fields.append("Event")
             dfd_fields.append("Batch Number")
             dfd_fields.append("Nest Number")
         # print("K2142_1_FOUND: ", K2142_1_FOUND)
@@ -181,11 +184,12 @@ def dfd_dfb_parsing(dfd_file):
             if len(tmp) + difference == len(dfd_fields):
                 # print("len(tmp) == len(dfd_fields)")
                 lis = first_fields[:]
-                lis.extend(tmp[0:3])
-                event_lis = parse_event(tmp[3])
-                # print("event_lis: ",event_lis)
-                lis.extend(event_lis)
-                lis.extend(tmp[4:])
+                part1_lis = parse_part(tmp[0])
+                lis.extend(part1_lis)
+                lis.extend(tmp[1:6])
+                part2_lis = parse_part(tmp[6])
+                lis.extend(part2_lis)
+                lis.extend(tmp[7:])
                 dfb_fields.append(lis)
             else:
                 # print("len(tmp) != len(dfd_fields)")
@@ -236,10 +240,10 @@ def dfd_dfb_parsing(dfd_file):
 ##############################################################################################################################
 # INPUT:    a comma seperated string extracted from dfx files, containing event info for up to 4 events
 # RETURN:   a list of values for event 1 though 4
-def parse_event(event):
-    lis = event.split(',')
-    if (len(lis) > 4):
-        return lis[0:4]
-    for i in range(4-len(lis)):
-        lis.append("null")
+def parse_part(part_info):
+    lis = []
+    lis.append(part_info[:11])
+    lis.append(part_info[13:17])
+    lis.append(part_info[17:23])
+    print(lis)
     return lis

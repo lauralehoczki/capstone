@@ -1,13 +1,9 @@
-# in the original file, ZG means type number
-# a difference with our case is that we don't have the ZG thing in filepath 
-# original function looks like: create_CSV_FULL("1546","a33",ZG_from_file[0:6],"pc")
-
 import sys
 import time
 import threading
 
 
-import parse_dfb_dfd as parser
+import linkage_parser as parser
 import generate_file_list as file_list
 
 
@@ -47,9 +43,11 @@ def create_CSV_FULL(machine,module,filetype,part_type):
     # print(dfd_filelist)
     for files in dfd_filelist:
         # parsing .dfd and .dfb/.dfx file and mounting them
-        dfd_fields, dfb_fields, additionnal_fields, error_code, file_errors = parser.dfd_dfb_parsing(files)
+        dfd_fields, dfb_fields, additionnal_fields, error_code, file_errors = parser.parsing(files)
+        # print(dfb_fields)
         if error_code == 0 and file_errors == 0:
             # if we are here, there's no error while parsing
+            # print("No error from parsing")
             MSN_position, DATETIME_position  = find_field_in_dfd_MSN_DATETIME(dfd_fields)
             if MSN_position!=9999 and DATETIME_position !=9999:
                 for lines in dfb_fields:
@@ -97,17 +95,10 @@ def create_CSV_FULL(machine,module,filetype,part_type):
 # TEST **********************************************
 # DATA_PATH   = "/Users/bosen/Downloads/⁨Machine stats⁩/process⁩/Steering/"
 
-# # #test m052
-# create_CSV_FULL("M1998","m052","pc","888878")
-# create_CSV_FULL("M1998","m052","pc","950273")
 
-# #test m04
-# create_CSV_FULL("M2002","m04","bd","944436")
-# create_CSV_FULL("M2002","m04","bd","950111")
-
-# #test m06
-# create_CSV_FULL("M2002","m06","pc","944436")
-# create_CSV_FULL("M2002","m06","pc","950111")
+#test m04
+create_CSV_FULL("M2002","m04","bd","944436")
+create_CSV_FULL("M2002","m04","bd","950111")
 
 
 # MAIN **********************************************
