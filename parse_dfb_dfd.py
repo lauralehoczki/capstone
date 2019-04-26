@@ -107,7 +107,6 @@ def dfd_dfb_parsing(dfd_file):
         # this parameter helps us to format the .csv file
         # by locating where to insert additional columns
 
-        flag = True
         for lines in dfd:
             # replace '\n' with ' '
             line = lines.replace(chr(10),' ')
@@ -130,7 +129,7 @@ def dfd_dfb_parsing(dfd_file):
                 index = line.find(' ')
                 dfd_fields.append(line[index+1:])
                 # dfd_fields.append(line)
-                # dfd_fields.append("Attribute")
+                dfd_fields.append("Attribute")
             if line[0:8] == "K2142/1 ":
                 K2142_1_FOUND = True
                 dfd_fields.append("Date/Time")
@@ -177,11 +176,8 @@ def dfd_dfb_parsing(dfd_file):
 
             # the lengths of dfb_fields and dfd_fields should match
             # each data corresponds to one title
-            print("len(tmp) = ",len(tmp),"; len(dfd_fields) = ",len(dfd_fields))
-            print("difference: ", difference)
-            if flag == True:
-                print(temp)
-                flag = False
+            # print("len(tmp) = ",len(tmp),"; len(dfd_fields) = ",len(dfd_fields))
+            # print("difference: ", difference)
             if len(tmp) + difference == len(dfd_fields):
                 # print("len(tmp) == len(dfd_fields)")
                 lis = first_fields[:]
