@@ -68,7 +68,7 @@ def create_CSV_FULL(machine,module,filetype,part_type):
     txt = ""
     for title in dfd_fields:
         # print("title: ", title)
-        txt+= titles
+        txt+= title
         txt+= ","
     f.write(txt+"\n")
     for row in DATAS:
@@ -96,8 +96,19 @@ def create_CSV_FULL(machine,module,filetype,part_type):
 
 # TEST **********************************************
 # DATA_PATH   = "/Users/bosen/Downloads/⁨Machine stats⁩/process⁩/Steering/"
+
+# #test m052
 create_CSV_FULL("M1998","m052","pc","888878")
 create_CSV_FULL("M1998","m052","pc","950273")
+
+# #test m04
+# create_CSV_FULL("M2002","m04","bd","944436")
+# create_CSV_FULL("M2002","m04","bd","950111")
+
+# #test m06
+# create_CSV_FULL("M2002","m06","pc","944436")
+# create_CSV_FULL("M2002","m06","pc","950111")
+
 
 # MAIN **********************************************
 # def main():
