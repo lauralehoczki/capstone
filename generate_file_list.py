@@ -6,7 +6,7 @@
 ######### DATA_PATH + machine\\module\\subdir\\ZG\\*.dfd
 ######### DATA_PATH   = "C:\\Stats_machine\\DATAS_MACHINES\\m"
 
-DATA_PATH   = "/Users/bosen/Downloads/Machine_stats/process/Steering/"
+DATA_PATH   = "/Users/bosen/Desktop/Machine_stats/process/Steering/"
 
 import os
 import glob
@@ -43,7 +43,7 @@ def retrieve_new_file(machine, module, subdir, part_type):
     for i in path_list_raw:
     	if (is_new):
     		path_list.append(i)
-
+    print(path_list)
     return path_list
 
 ##############################################################################################################################

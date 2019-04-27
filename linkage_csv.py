@@ -35,7 +35,7 @@ def create_CSV_FULL(machine,module,filetype,part_type):
     print("Generating file for "+machine+"/"+module+" for part type: "+part_type)
 
     DATA = []
-    
+
     # create a list of file names (fullname) in increasing order
     dfd_filelist = file_list.retrieve_new_file(machine,module,filetype,part_type)
     # print(dfd_filelist)
@@ -55,12 +55,22 @@ def create_CSV_FULL(machine,module,filetype,part_type):
             else:
                 print("1_Errors occured while parsing : ", files)
         else:
-            print("2_Errors occured while parsing : ", files)
 
+    # print(dfb_fields)
+    if error_code == 0 and file_errors == 0:
+      # if we are here, there's no error while parsing
+      # print("No error from parsing")
+      MSN_position, DATETIME_position  = find_field_in_dfd_MSN_DATETIME(dfd_fields)
+      if MSN_position!=9999 and DATETIME_position !=9999:
+          for lines in dfb_fields:
+              # print(dfd_fields)
+              # print(lines)
+              DATA.append(lines)
+    
     # generating CSV file
     # before this step we should have a list called DATA containing all the data
     # the following step is trivial, not as important as the last one
-    f = open("/Users/bosen/Desktop/"+machine+"_"+module+"_"+part_type+".csv","w")
+    f = open("/Users/laura/Desktop/"+machine+"_"+module+"_"+part_type+".csv","w")
     txt = ""
     for title in dfd_fields:
         # print("title: ", title)
@@ -92,12 +102,12 @@ create_CSV_FULL("M2002","m04","bd","950111")
 
 
 # MAIN **********************************************
-# def main():
-#     threading.Timer(300.0, main).start()
-#     print("Start : %s" % time.ctime())
-#     create_CSV_FULL("M1998","m052","pc","888878")
-#     create_CSV_FULL("M1998","m052","pc","950273")
-#     print("End : %s" % time.ctime())
-#     print()
-
-# main()
+#def main():
+# threading.Timer(300.0, main).start()
+# print("Start : %s" % time.ctime())
+# create_CSV_FULL("M1998","m052","pc","888878")
+# create_CSV_FULL("M1998","m052","pc","950273")
+# print("End : %s" % time.ctime())
+# print()
+#
+#main()
