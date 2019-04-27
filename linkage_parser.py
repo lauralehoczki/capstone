@@ -8,7 +8,11 @@ associated file:
     Extension:      .dfd
     Definition:     the file containing titles for the data
 
-
+ErrorCode 0: No errors
+ErrorCode 1: File is not dfd
+ErrorCode 2: File is not dfd or dfb
+ErrorCode 3: File is not dfd, dfb or dfx
+ErrorCode 4: Incorrect date/time or batch number
 """
 
 # import utils
@@ -16,13 +20,13 @@ associated file:
 # containing some useful variables or functions
 
 ##############################################################################################################################
-# INPUT:    a single dfd file
+# INPUT:    a single dfd, dfb or dfx file
 # RETURN:   dfd_fields          - titles for the data
 #           dfb_fields          - data
 #           additionnal_fields  - list of data that does't match the title in dfb_fields
 #           errorcode           - specifies error type if there's any
 #           error               - number of total errors
-def parsing(dfd_file):
+def parsing(file):
     
     # variable defining
     # *********************************************************
@@ -31,7 +35,7 @@ def parsing(dfd_file):
     additionnal_fields  = [] # the abnormal data
 
     errorcode           = 0
-    error               = 0
+    num_errors          = 0
 
     difference          = 0 
     # the length difference between a line from .dfd and a line from .dfx
@@ -48,17 +52,17 @@ def parsing(dfd_file):
     # file existense checking
     # *********************************************************
     try:
-        dfd = open(dfd_file, "r", encoding=('latin-1'))
-        # print("dfd_file: ",dfd_file)
+        dfd = open(file, "r", encoding=('latin-1'))
+        # print("file: ", file)
     except:
-        print("An error occured while trying to open : " + dfd_file)
+        print("An error occured while trying to open : " + file)
         errorcode = 1
 
     # trying to open the associated file
     # i.e., the .dfd files containing the data title
     if errorcode == 0:
         try:
-            dfb = open(dfd_file.split('.')[0]+".dfb","r", encoding=('latin-1'))
+            dfb = open(file.split('.')[0]+".dfb","r", encoding=('latin-1'))
             filetype = "dfb"
         except:
             errorcode = 2
@@ -66,11 +70,11 @@ def parsing(dfd_file):
         # then check whether it's .dfx
         if errorcode == 2:
             try:
-                dfb = open(dfd_file.split('.')[0]+".dfx","r", encoding=('latin-1'))
+                dfb = open(file.split('.')[0]+".dfx","r", encoding=('latin-1'))
                 filetype = "dfx"
                 errorcode = 0
             except: # no associated files are found
-                print("An error occured while trying to open : "+dfd_file.split('.')[0]+".dfb or .dfx")
+                print("An error occured while trying to open : "+file.split('.')[0]+".dfb or .dfx")
                 errorcode = 3
     # print("The error code is " + str(errorcode))
     # print(dfd)
@@ -101,7 +105,7 @@ def parsing(dfd_file):
         """
         
         # there are more lines than we need in the .dfd file
-        # in most cases, only the lines starting with "K2002" contain the data title
+        # Lines starting with "K2002" contain data title (few exceptions exist)
         
         K2142_1_FOUND = False 
         # this parameter helps us to format the .csv file
@@ -114,16 +118,14 @@ def parsing(dfd_file):
             line = line.replace(chr(13),' ')
             if line[0:2] == "K1":
                 if line[0:5] == "K1222":
-                    # this title doesn't appear in the example file
-                    # plus, some .dfx files don't have this data title
-                    # so we just skip it
+                    # this field doesn't need to be saved or analyzed so we skip it
                     continue
                 dfd_fields.append(line[0:5])
                 first_fields.append(line[6:-1])
                 difference = difference + 1
                 # these data should be in the final .csv file
-                # but they only appears in the associated file
-                # so each appearance of these data can cause a difference of 1 
+                # but they only appear in the associated file
+                # each appearance of this title causes a difference of 1 
                 # in the length of dfd_fields and dfb_fields
             if line[0:8] == "K2002/1 ":
                 index = line.find(' ')
@@ -139,7 +141,7 @@ def parsing(dfd_file):
                 dfd_fields.append("Event")
                 # this is only one field in dfx file
                 # and no corresponding field in the dfd file
-                # we split it into 4 in the final csv file
+                # following convention, we split it into 4 in the final csv file
                 # i.e., Event1, Event2, Event3, Event4
                 dfd_fields.append("Batch Number")
                 dfd_fields.append("Nest Number")
@@ -200,25 +202,22 @@ def parsing(dfd_file):
         # after this step, we've collected 
         #       1). the fields names from .dfd
         #       2).  the data in .dfx/dfb
-        # hopefully they will match
 
         # plausibility check
         # *********************************************************
-        # check the format of some fields
-        # to know whether we have the correct data in the correct field
-        # for example, if we have #12345678 in datetime field
-        # it's wrong
-        # what's expected is something like 2019/03/05
+        # verify correctness of data where possible by checking the format of some fields
+        # e.g. date/time (expected format: 2019/03/05) and Batch Number (expected to begin
+        # with #)
         for i in range(0,len(dfd_fields),1):
             if dfd_fields[i] == "Date/Time":
                 for items in dfb_fields:
                     if len(items[i].split('/'))<2:
-                        error+=1
+                        num_errors+=1
                         print("error in datetime : ")
             if dfd_fields[i] == "Batch Number":
                 for items in dfb_fields:
                     if items[i][0] != '#':
-                        error+=1
+                        num_errors+=1
                         print("error in MSN : ")
             # removing "Not measured" lines of the file
             # if dfd_fields[i][0:5] == "K2004" and filetype == "dfb":
@@ -229,13 +228,13 @@ def parsing(dfd_file):
             #             items = 0
             #         else:
             #             items+=1
-        if error > 0:
+        if num_errors > 0:
             errorcode = 4
             print("errors in file parsing : ", str(error))
     else: # this else corresponds to "if errorcode == 0: " at line 78
         if errorcode == 2 or errorcode == 3:
-            dfd.close           
-    return dfd_fields, dfb_fields, additionnal_fields, errorcode, error
+            dfd.close()           
+    return dfd_fields, dfb_fields, additionnal_fields, errorcode, num_errors
 
 ##############################################################################################################################
 # INPUT:    a comma seperated string extracted from dfx files, containing event info for up to 4 events

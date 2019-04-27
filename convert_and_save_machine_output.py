@@ -36,7 +36,15 @@ query = "sqlldr "+user+"/"+pw+"@"+server+" control=loader.ctl"
 # run the query
 c.execute(query)
 
-query = ''' load data
+query = ''' CREATE OR REPLACE TRIGGER test_trigger
+			BEFORE INSERT
+			ON M052
+			REFERENCING NEW AS NEW
+			FOR EACH ROW
+			BEGIN
+			SELECT M052IDs.nextval INTO :NEW.M052ID FROM dual;
+			END;
+			load data
  			infile '''+new_data+'''.csv'
  			into table M06
  			fields terminated by ","

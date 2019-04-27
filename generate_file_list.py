@@ -18,7 +18,6 @@ import datetime
 # even after the program crashes and gets reopened, the value should persist
 last_time_stamp = 0
 
-
 ##############################################################################################################################
 # glob module finds all pathnames matching a specified pattern
 # for example:
@@ -35,16 +34,9 @@ def retrieve_new_file(machine, module, subdir, part_type):
 	# path_list_raw = glob.glob("/Users/bosen/Downloads/Machine_stats/process/Steering/M1998/m052/pc/888878/*.dfd")
     # path_list_raw = glob.glob(DATA_PATH+machine+"/"+module+"/"+subdir+"/"+part_type+"/*.dfd")
     path_list_raw = glob.glob(DATA_PATH+machine+"/"+module+"/"+subdir+"/"+part_type+"/19*.dfd")
-    # print(path_list)
-
-    """
-	# to verify whether the files are in chronologic order
-	# this step is included in the original Python file
-	# BUT what's the point of doing so?
-    if verify_files_chronologic_order(path_list)!=0:
-        path_list = []
-        print("Critical Error files were not chronologically ordered !!!")
-    """
+    path_list_raw.extend(glob.glob(DATA_PATH+machine+"/"+module+"/"+subdir+"/"+part_type+"/19*.dfx"))
+    path_list_raw.extend(glob.glob(DATA_PATH+machine+"/"+module+"/"+subdir+"/"+part_type+"/19*.dfb"))
+    # print(path_list_raw)
     
     # selecting the new files by looking at their creation dates
     path_list = []
@@ -69,8 +61,7 @@ def retrieve_new_file(machine, module, subdir, part_type):
     so we can locate new files by comparing the time stamp
     """
 # INPUT:	full file name including the path
-# RETURN:	True if it's a new file
-# RETURN:	False otherwise
+# RETURN:	True if it's a new file, false otherwise
 def is_new(path_to_file):
 
     print(platform.system())
@@ -85,7 +76,6 @@ def is_new(path_to_file):
         except AttributeError:
             mtime = stat.st_birthtime
             return (mtime < last_time_stamp)
-
 
 ##############################################################################################################################
 # INPUT:	a list of files

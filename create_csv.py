@@ -6,10 +6,8 @@ import sys
 import time
 import threading
 
-
 import parse_dfb_dfd as parser
 import generate_file_list as file_list
-
 
 ##############################################################################################################################
 # INPUT:    a list of data titles, a specific title
@@ -40,7 +38,7 @@ def create_CSV_FULL(machine,module,filetype,part_type):
 
     print("Generating file for "+machine+"/"+module+" for part type: "+part_type)
 
-    DATAS = []
+    DATA = []
     
     # create a list of file names (fullname) in increasing order
     dfd_filelist = file_list.retrieve_new_file(machine,module,filetype,part_type)
@@ -55,7 +53,7 @@ def create_CSV_FULL(machine,module,filetype,part_type):
                 for lines in dfb_fields:
                     # print(dfd_fields)
                     # print(lines)
-                    DATAS.append(lines)
+                    DATA.append(lines)
             else:
                 print("1_Errors occured while parsing : ", files)
         else:
@@ -71,7 +69,7 @@ def create_CSV_FULL(machine,module,filetype,part_type):
         txt+= title
         txt+= ","
     f.write(txt+"\n")
-    for row in DATAS:
+    for row in DATA:
         # print("row: ",row)
         txt = ""
         for fields in row:
@@ -79,14 +77,6 @@ def create_CSV_FULL(machine,module,filetype,part_type):
         txt+="\n"
         f.write(txt)     
     f.close()
-    
-    # free memory
-    # but I don't think that's needed
-    # we return after this step 
-    # and all the dynamic memory used should be auto released
-    del dfd_fields
-    del dfb_fields
-    del additionnal_fields
 
     return
 
