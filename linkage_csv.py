@@ -1,9 +1,21 @@
-import sys
+# import statements
+import sys, os
 import time
 import threading
+import cgi, cgitb
+cgitb.enable()
+import sys, os
+import codecs
+import cx_Oracle
+sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
 
 import linkage_parser as parser
 import generate_file_list as file_list
+
+# Authentication information for database connection
+user = 'sys'
+pw = 'oracle'
+server = 'orc1'
 
 ##############################################################################################################################
 # INPUT:    a list of data titles, a specific title
@@ -66,8 +78,21 @@ def create_CSV_FULL(machine,module,filetype,part_type):
               # print(dfd_fields)
               # print(lines)
               DATA.append(lines)
-    
-    # generating CSV file
+              
+##############################################################################################################################
+    # Establish connection to Oracle database
+	dsn_tns = cx_Oracle.makedsn('Host Name', 'Port Number', service_name='Service Name')
+	conn = cx_Oracle.connect(user=r'User Name', password='Personal Password', dsn=dsn_tns)
+
+	# set up the cursor
+	try:
+		c = conn.cursor()
+	except:
+		print("Unable to connect to the database")
+
+####################################################################################################
+
+    # generate CSV file
     # before this step we should have a list called DATA containing all the data
     # the following step is trivial, not as important as the last one
     f = open("/Users/laura/Desktop/"+machine+"_"+module+"_"+part_type+".csv","w")
@@ -83,8 +108,13 @@ def create_CSV_FULL(machine,module,filetype,part_type):
         for fields in row:
             txt+=(fields+",")
         txt+="\n"
-        f.write(txt)     
+        f.write(txt)
+        
+        # At the same time update the database too
+        query = '''INSERT INTO '''+machine.upper()+''' VALUES '''+txt
+        c.execute(query)
     f.close()
+    c.close()
 
     return
 

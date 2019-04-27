@@ -42,12 +42,17 @@ except:
 	return
 """
 Integrate with linkage_csv and load new csv's into the database as they are created
-"""
+
 query = '''
 			load data infile '''+new_data'''
  			append into table ''' machine.upper()'''
  			fields terminated by "," skip 1
 		'''
+		
+
+Alternatively: save directly into database
+query = INSERT INTO machine.upper() VALUES row
+"""		
 c.execute(query)
 # close the connection
 conn.close()

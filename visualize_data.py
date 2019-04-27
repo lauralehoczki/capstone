@@ -1,12 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Thu Mar 21 13:11:25 2019
-
-@author: laura
-
 This program is for running further analysis on data after it has been stored 
-in a database
+in the database
 """
 
 # import statements
@@ -19,7 +15,17 @@ from creds import *
 import plotly.plotly as py
 import plotly.graph_objs as go
 import pandas as pd
+import seaborn as sns 
+sns.set(color_codes=True)
 sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
+
+# Authentication information
+user = 'sys'
+password = 'oracle'
+server = 'orc1'
+
+# Location for analysis graphs
+save_folder = "/Users/bosen/Desktop/"
 
 # Establish connection to Oracle database
 dsn_tns = cx_Oracle.makedsn('Host Name', 'Port Number', service_name='Service Name')
@@ -40,8 +46,22 @@ c.execute(query)
 # fetch the data in the result set
 result = c.fetchall()
 
+mm_with_load = []
+mm_without_load = []
 #### VISUALIZE DATA
-##for row in result:
-
+for row in result:
+	mm_with_load.append(row[0])
+	mm_without_load.append(row[1])
+	
 # close the connection
 conn.close()
+
+data = [[mm_with_load[i],mm_without_load[i]] for i in range(len(mm_with_load))]
+df = pd.DataFrame(data, columns = ['mm_with_load', 'mm_without_load']) 
+
+ax = sns.regplot(x=df.mm_with_load, y=df.mm_without_load, color="b")
+fig = ax.get_figure()
+fig_name = "sample.png"
+fig.savefig(save_folder + fig_name)
+
+print("Finished! Files saved at: ", save_folder + fig_name)

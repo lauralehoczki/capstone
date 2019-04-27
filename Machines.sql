@@ -4,8 +4,11 @@
 -- DROP TABLE M052;
 -- DROP TABLE M06;
 -- DROP TABLE M04;
+-- 
+-- To run from command line, connect to database, then "@ + FILEPATH"
+-- e.g. @C:\Users\supplier_admin\Desktop\Machines.sql
 
-/* CREATE TABLE M04 (
+CREATE TABLE M04 (
 K1001 VARCHAR(8),
 K1002 VARCHAR(40),
 K1004 VARCHAR(30),
@@ -31,7 +34,7 @@ Type_2 VARCHAR(8),
 Attribute2 VARCHAR(3),
 CONSTRAINT batch_num UNIQUE (BatchNumber),
 CONSTRAINT dmc_gear UNIQUE (DMC_GearUnit)
-); */
+);
 	
 CREATE TABLE M052 (
 M052_ID INT NOT NULL,
