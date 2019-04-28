@@ -34,8 +34,6 @@ def retrieve_new_file(machine, module, subdir, part_type):
 	# path_list_raw = glob.glob("/Users/bosen/Downloads/Machine_stats/process/Steering/M1998/m052/pc/888878/*.dfd")
     # path_list_raw = glob.glob(DATA_PATH+machine+"/"+module+"/"+subdir+"/"+part_type+"/*.dfd")
     path_list_raw = glob.glob(DATA_PATH+machine+"/"+module+"/"+subdir+"/"+part_type+"/19*.dfd")
-    path_list_raw.extend(glob.glob(DATA_PATH+machine+"/"+module+"/"+subdir+"/"+part_type+"/19*.dfx"))
-    path_list_raw.extend(glob.glob(DATA_PATH+machine+"/"+module+"/"+subdir+"/"+part_type+"/19*.dfb"))
     # print(path_list_raw)
     
     # selecting the new files by looking at their creation dates

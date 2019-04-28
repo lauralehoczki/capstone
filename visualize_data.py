@@ -35,9 +35,11 @@ conn = cx_Oracle.connect(user=r'User Name', password='Personal Password', dsn=ds
 c = conn.cursor()
 
 # create the query (as a string)
-query = '''SELECT P_052_Quality_measuring_MM_after_joining_with_load, 
-				Q_052_Quality_measuring_MM_after_joining_without_load
-           FROM M052
+query = '''SELECT M06.P_Offset_A_1st_run,
+			M052.Q052QualMeasMMaftJoinWOload
+           FROM M052, M06, M04 
+           WHERE M06.M06BatchNumber = M04.BatchNumber
+           AND M052.M052BatchNumber = M04.DMC_GearUnit;
            '''
 
 # run the query
@@ -50,8 +52,8 @@ mm_with_load = []
 mm_without_load = []
 #### VISUALIZE DATA
 for row in result:
-	mm_with_load.append(row[0])
-	mm_without_load.append(row[1])
+	mm_with_load.append(float(row[0]))
+	mm_without_load.append(float(row[1]))
 	
 # close the connection
 conn.close()
