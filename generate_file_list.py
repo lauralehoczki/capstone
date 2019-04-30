@@ -6,17 +6,19 @@
 ######### DATA_PATH + machine\\module\\subdir\\ZG\\*.dfd
 ######### DATA_PATH   = "C:\\Stats_machine\\DATAS_MACHINES\\m"
 
-DATA_PATH   = "/Users/bosen/Desktop/Machine_stats/process/Steering/"
+#DATA_PATH   = "/Users/bosen/Desktop/Machine_stats/process/Steering/"
+DATA_PATH = "Q:\process\steering\"
 
 import os
 import glob
 import platform
 import datetime
 
-# variable last_time_stamp should be global in scope
-# recording the last time we dealt with the incoming data
-# even after the program crashes and gets reopened, the value should persist
-last_time_stamp = 0
+# record the last time we dealt with the incoming data in a file so it persists
+timestamp_path = "C:\Users\supplier_admin\Desktop\CSV\timestamp.txt"
+timestamp = open(timestamp_path,"r")
+last_time_stamp = int(timestamp.readline().replace('\n','')
+timestamp.close()
 
 ##############################################################################################################################
 # glob module finds all pathnames matching a specified pattern
@@ -33,15 +35,20 @@ last_time_stamp = 0
 def retrieve_new_file(machine, module, subdir, part_type):
 	# path_list_raw = glob.glob("/Users/bosen/Downloads/Machine_stats/process/Steering/M1998/m052/pc/888878/*.dfd")
     # path_list_raw = glob.glob(DATA_PATH+machine+"/"+module+"/"+subdir+"/"+part_type+"/*.dfd")
-    path_list_raw = glob.glob(DATA_PATH+machine+"/"+module+"/"+subdir+"/"+part_type+"/19*.dfd")
+    path_list_raw = glob.glob(DATA_PATH+machine+"\'"+module+"\'"+subdir+"\'"+part_type+"\19*.dfd")
     # print(path_list_raw)
     
     # selecting the new files by looking at their creation dates
     path_list = []
     for i in path_list_raw:
-    	if (is_new):
+    	if (is_new(i)):
     		path_list.append(i)
-    print(path_list)
+    #print(path_list)
+    
+    #Record new current timestamp before exiting the file list generator
+    timestamp = open(timestamp_path,"w")
+    timestamp.write(os.path.getctime(timestamp_path))
+    timestamp.close()
     return path_list
 
 ##############################################################################################################################

@@ -6,7 +6,7 @@ import cgi, cgitb
 cgitb.enable()
 import sys, os
 import codecs
-import cx_Oracle
+#import cx_Oracle
 sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
 
 import linkage_parser as parser
@@ -80,6 +80,7 @@ def create_CSV_FULL(machine,module,filetype,part_type):
               DATA.append(lines)
               
 ##############################################################################################################################
+    """
     # Establish connection to Oracle database
 	dsn_tns = cx_Oracle.makedsn('Host Name', 'Port Number', service_name='Service Name')
 	conn = cx_Oracle.connect(user=r'User Name', password='Personal Password', dsn=dsn_tns)
@@ -89,13 +90,14 @@ def create_CSV_FULL(machine,module,filetype,part_type):
 		c = conn.cursor()
 	except:
 		print("Unable to connect to the database")
-
+	"""
 ####################################################################################################
 
     # generate CSV file
     # before this step we should have a list called DATA containing all the data
     # the following step is trivial, not as important as the last one
-    f = open("/Users/laura/Desktop/"+machine+"_"+module+"_"+part_type+".csv","w")
+    #f = open("/Users/laura/Desktop/"+machine+"_"+module+"_"+part_type+".csv","w")
+    f = open("C:\Users\supplier_admin\Desktop\'"+machine+"_"+module+"_"+part_type+".csv", "w")
     txt = ""
     for title in dfd_fields:
         # print("title: ", title)
@@ -109,13 +111,13 @@ def create_CSV_FULL(machine,module,filetype,part_type):
             txt+=(fields+",")
         txt+="\n"
         f.write(txt)
-        
+   """     
         # At the same time update the database too
         query = '''INSERT INTO '''+machine.upper()+''' VALUES '''+txt
         c.execute(query)
     f.close()
     c.close()
-
+	"""
     return
 
 # above is function definition

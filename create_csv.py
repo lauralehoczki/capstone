@@ -62,7 +62,8 @@ def create_CSV_FULL(machine,module,filetype,part_type):
     # generating CSV file
     # before this step we should have a list called DATA containing all the data
     # the following step is trivial, not as important as the last one
-    f = open("/Users/bosen/Desktop/"+machine+"_"+module+"_"+part_type+".csv","w")
+    #f = open("/Users/bosen/Desktop/"+machine+"_"+module+"_"+part_type+".csv","w")
+    f = open("C:\Users\supplier_admin\Desktop\'"+machine+"_"+module+"_"+part_type+".csv", "w")
     txt = ""
     for title in dfd_fields:
         # print("title: ", title)

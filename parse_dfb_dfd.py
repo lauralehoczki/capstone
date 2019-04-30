@@ -7,13 +7,7 @@ data file:
 associated file: 
     Extension:      .dfd
     Definition:     the file containing titles for the data
-
-
 """
-
-# import utils
-# a utility file written by me
-# containing some useful variables or functions
 
 ##############################################################################################################################
 # INPUT:    a single dfd file

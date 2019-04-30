@@ -15,9 +15,6 @@ ErrorCode 3: File is not dfd, dfb or dfx
 ErrorCode 4: Incorrect date/time or batch number
 """
 
-# import utils
-# a utility file written by me
-# containing some useful variables or functions
 
 ##############################################################################################################################
 # INPUT:    a single dfd, dfb or dfx file

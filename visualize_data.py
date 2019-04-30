@@ -10,7 +10,7 @@ import cgi, cgitb
 cgitb.enable()
 import sys, os
 import codecs
-import cx_Oracle
+#import cx_Oracle
 from creds import *
 import plotly.plotly as py
 import plotly.graph_objs as go
@@ -19,17 +19,19 @@ import seaborn as sns
 sns.set(color_codes=True)
 sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
 
-# Authentication information
+# Authentication information for Oracle
 user = 'sys'
 password = 'oracle'
 server = 'orc1'
 
 # Location for analysis graphs
-save_folder = "/Users/bosen/Desktop/"
+#save_folder = "/Users/bosen/Desktop/"
+save_folder = "C:\Users\supplier_admin\Desktop\Analysis"
 
+"""
 # Establish connection to Oracle database
 dsn_tns = cx_Oracle.makedsn('Host Name', 'Port Number', service_name='Service Name')
-conn = cx_Oracle.connect(user=r'User Name', password='Personal Password', dsn=dsn_tns)
+conn = cx_Oracle.connect(user, password, dsn=dsn_tns)
 
 # set up the cursor
 c = conn.cursor()
@@ -39,7 +41,7 @@ query = '''SELECT M06.P_Offset_A_1st_run,
 			M052.Q052QualMeasMMaftJoinWOload
            FROM M052, M06, M04 
            WHERE M06.M06BatchNumber = M04.BatchNumber
-           AND M052.M052BatchNumber = M04.DMC_GearUnit;
+           AND M052.M052BatchNumber = M04.DMC_GearUnit
            '''
 
 # run the query
@@ -57,6 +59,7 @@ for row in result:
 	
 # close the connection
 conn.close()
+"""
 
 data = [[mm_with_load[i],mm_without_load[i]] for i in range(len(mm_with_load))]
 df = pd.DataFrame(data, columns = ['mm_with_load', 'mm_without_load']) 
