@@ -7,6 +7,12 @@ data file:
 associated file: 
     Extension:      .dfd
     Definition:     the file containing titles for the data
+    
+ErrorCode 0: No errors
+ErrorCode 1: File is not dfd
+ErrorCode 2: File is not dfd or dfb
+ErrorCode 3: File is not dfd, dfb or dfx
+ErrorCode 4: Incorrect date/time or batch number
 """
 
 ##############################################################################################################################
@@ -18,7 +24,7 @@ associated file:
 #           error               - number of total errors
 def dfd_dfb_parsing(dfd_file):
     
-    # variable defining
+    # variable definitions
     # *********************************************************
     dfd_fields          = [] # the titles of data from associated files
     dfb_fields          = [] # the data
@@ -66,8 +72,6 @@ def dfd_dfb_parsing(dfd_file):
             except: # no associated files are found
                 print("An error occured while trying to open : "+dfd_file.split('.')[0]+".dfb or .dfx")
                 errorcode = 3
-    # print("The error code is " + str(errorcode))
-    # print(dfd)
 
     if errorcode == 0: # no error happened
         # parsing dfd, getting the titles
@@ -170,8 +174,6 @@ def dfd_dfb_parsing(dfd_file):
 
             # the lengths of dfb_fields and dfd_fields should match
             # each data corresponds to one title
-            # print("len(tmp) = ",len(tmp),"; len(dfd_fields) = ",len(dfd_fields))
-            # print("difference: ", difference)
             if len(tmp) + difference == len(dfd_fields):
                 # print("len(tmp) == len(dfd_fields)")
                 lis = first_fields[:]
@@ -184,8 +186,8 @@ def dfd_dfb_parsing(dfd_file):
             else:
                 # print("len(tmp) != len(dfd_fields)")
                 additionnal_fields.append(tmp)
-        dfd.close
-        dfb.close
+        dfd.close()
+        dfb.close()
 
         # after this step, we've collected 
         #       1). the fields names from .dfd
@@ -224,7 +226,7 @@ def dfd_dfb_parsing(dfd_file):
             print("errors in file parsing : ", str(error))
     else: # this else corresponds to "if errorcode == 0: " at line 78
         if errorcode == 2 or errorcode == 3:
-            dfd.close           
+            dfd.close()    
     return dfd_fields, dfb_fields, additionnal_fields, errorcode, error
 
 ##############################################################################################################################
@@ -237,3 +239,4 @@ def parse_event(event):
     for i in range(4-len(lis)):
         lis.append("null")
     return lis
+    

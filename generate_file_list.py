@@ -6,8 +6,8 @@
 ######### DATA_PATH + machine\\module\\subdir\\ZG\\*.dfd
 ######### DATA_PATH   = "C:\\Stats_machine\\DATAS_MACHINES\\m"
 
-#DATA_PATH   = "/Users/bosen/Desktop/Machine_stats/process/Steering/"
-DATA_PATH = "Q:\process\steering\"
+#DATA_PATH = "Q:\\Process\\Steering\\"
+DATA_PATH = "C:\\Users\\supplier_admin\\Desktop\\Steering\\"
 
 import os
 import glob
@@ -15,9 +15,9 @@ import platform
 import datetime
 
 # record the last time we dealt with the incoming data in a file so it persists
-timestamp_path = "C:\Users\supplier_admin\Desktop\CSV\timestamp.txt"
+timestamp_path = "C:\\Users\\supplier_admin\\Desktop\\CSV\\timestamp.txt"
 timestamp = open(timestamp_path,"r")
-last_time_stamp = int(timestamp.readline().replace('\n','')
+last_time_stamp = float(timestamp.readline().replace('\n',''))
 timestamp.close()
 
 ##############################################################################################################################
@@ -33,21 +33,21 @@ timestamp.close()
 # RETURN:	a list of new files in the target directory
 # NOTE:		many of them are old files, we'll have to find the new ones
 def retrieve_new_file(machine, module, subdir, part_type):
-	# path_list_raw = glob.glob("/Users/bosen/Downloads/Machine_stats/process/Steering/M1998/m052/pc/888878/*.dfd")
-    # path_list_raw = glob.glob(DATA_PATH+machine+"/"+module+"/"+subdir+"/"+part_type+"/*.dfd")
-    path_list_raw = glob.glob(DATA_PATH+machine+"\'"+module+"\'"+subdir+"\'"+part_type+"\19*.dfd")
-    # print(path_list_raw)
-    
+    path_list_raw = glob.glob(DATA_PATH+machine+"\\"+module+"\\"+subdir+"\\"+part_type+"\\*.dfd")
+
     # selecting the new files by looking at their creation dates
     path_list = []
     for i in path_list_raw:
-    	if (is_new(i)):
-    		path_list.append(i)
-    #print(path_list)
+        if path_list_raw.index(i)==0:
+            print("Last time stamp: "+str(last_time_stamp))
+            print("Current time stamp: "+str(os.path.getctime(i)))
+            print(is_new(i))
+        if (is_new(i)):
+            path_list.append(i)
     
     #Record new current timestamp before exiting the file list generator
     timestamp = open(timestamp_path,"w")
-    timestamp.write(os.path.getctime(timestamp_path))
+    timestamp.write(str(os.path.getctime(timestamp_path)))
     timestamp.close()
     return path_list
 
@@ -69,10 +69,9 @@ def retrieve_new_file(machine, module, subdir, part_type):
 # RETURN:	True if it's a new file, false otherwise
 def is_new(path_to_file):
 
-    print(platform.system())
     if platform.system() == 'Windows':
         ctime = os.path.getctime(path_to_file)
-        return (ctime < last_time_stamp)
+        return (ctime > last_time_stamp)
     else:
         stat = os.stat(path_to_file)
         ctime = stat.st_birthtime
@@ -89,11 +88,11 @@ def is_new(path_to_file):
 def verify_files_chronologic_order(filelist):
     errors      = 0
     if len(filelist) > 0:
-        previous    = int(filelist[0].split('/')[-1].split('.')[0][0:10])
+        previous    = int(filelist[0].split('\\')[-1].split('.')[0][0:10])
         # for example, for a file called ..../process/Steering/M1998/m052/pc/888878/1234567890.dfx
         # previous = int(1234567890) 
         for lines in range(1,len(filelist),1):
-            if not previous < int(filelist[lines].split('/')[-1].split('.')[0][0:10]):
+            if not previous < int(filelist[lines].split('\\')[-1].split('.')[0][0:10]):
                 ######################### error!!! ######################
                 # previous won't change
                 errors+=1

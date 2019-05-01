@@ -73,8 +73,7 @@ def parsing(file):
             except: # no associated files are found
                 print("An error occured while trying to open : "+file.split('.')[0]+".dfb or .dfx")
                 errorcode = 3
-    # print("The error code is " + str(errorcode))
-    # print(dfd)
+    print("The error code is " + str(errorcode))
 
     if errorcode == 0: # no error happened
         # parsing dfd, getting the titles
@@ -193,8 +192,8 @@ def parsing(file):
             else:
                 # print("len(tmp) != len(dfd_fields)")
                 additionnal_fields.append(tmp)
-        dfd.close
-        dfb.close
+        dfd.close()
+        dfb.close()
 
         # after this step, we've collected 
         #       1). the fields names from .dfd
@@ -242,4 +241,4 @@ def parse_part(part_info):
     lis.append(part_info[13:17])
     lis.append(part_info[17:23])
     print(lis)
-    return lis
+    return(lis)

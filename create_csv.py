@@ -1,13 +1,22 @@
-# in the original file, ZG means type number
-# a difference with our case is that we don't have the ZG thing in filepath 
-# original function looks like: create_CSV_FULL("1546","a33",ZG_from_file[0:6],"pc")
-
-import sys
+# import statements
+import sys, os
 import time
 import threading
+import cgi, cgitb
+cgitb.enable()
+import sys, os
+import codecs
+#import cx_Oracle
+#import visualize_data as vis
+sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
 
 import parse_dfb_dfd as parser
 import generate_file_list as file_list
+
+# Authentication information for database connection
+user = 'sys'
+pw = 'oracle'
+server = 'orc1'
 
 ##############################################################################################################################
 # INPUT:    a list of data titles, a specific title
@@ -58,12 +67,23 @@ def create_CSV_FULL(machine,module,filetype,part_type):
                 print("1_Errors occured while parsing : ", files)
         else:
             print("2_Errors occured while parsing : ", files)
+#################################################################################################
+	"""
+	# Establish connection to Oracle database
+	dsn_tns = cx_Oracle.makedsn('Host Name', 'Port Number', service_name='Service Name')
+	conn = cx_Oracle.connect(user=r'User Name', password='Personal Password', dsn=dsn_tns)
 
+	# set up the cursor
+	try:
+		c = conn.cursor()
+	except:
+		print("Unable to connect to the database")
+	"""
+#################################################################################################
     # generating CSV file
     # before this step we should have a list called DATA containing all the data
     # the following step is trivial, not as important as the last one
-    #f = open("/Users/bosen/Desktop/"+machine+"_"+module+"_"+part_type+".csv","w")
-    f = open("C:\Users\supplier_admin\Desktop\'"+machine+"_"+module+"_"+part_type+".csv", "w")
+    f = open("C:\\Users\\supplier_admin\\Desktop\\CSV\\"+machine+"_"+module+"_"+part_type+".csv", "w")
     txt = ""
     for title in dfd_fields:
         # print("title: ", title)
@@ -77,7 +97,14 @@ def create_CSV_FULL(machine,module,filetype,part_type):
             txt+=(fields+",")
         txt+="\n"
         f.write(txt)     
-    f.close()
+        """
+        # At the same time update the database too
+        query = '''INSERT INTO '''+machine.upper()+''' VALUES '''+txt
+		c.execute(query)
+	f.close()
+    c.close()
+    vis.visualize_data()
+    """
 
     return
 
@@ -85,22 +112,10 @@ def create_CSV_FULL(machine,module,filetype,part_type):
 ##############################################################################################################################
 # below is execution
 
-# TEST **********************************************
-# DATA_PATH   = "/Users/bosen/Downloads/⁨Machine stats⁩/process⁩/Steering/"
 
-# # #test m052
-# create_CSV_FULL("M1998","m052","pc","888878")
-# create_CSV_FULL("M1998","m052","pc","950273")
-
-# #test m04
-# create_CSV_FULL("M2002","m04","bd","944436")
-# create_CSV_FULL("M2002","m04","bd","950111")
-
-# #test m06
-# create_CSV_FULL("M2002","m06","pc","944436")
-# create_CSV_FULL("M2002","m06","pc","950111")
-
-
+#create_CSV_FULL("M1998","m052","pc","950273")
+#create_CSV_FULL("M1998","m052","pc","944436")
+#create_CSV_FULL("M1998","m052","pc","888878")
 # MAIN **********************************************
 # def main():
 #     threading.Timer(300.0, main).start()
