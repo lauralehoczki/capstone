@@ -98,8 +98,23 @@ def create_CSV_FULL(machine,module,filetype,part_type):
         txt+="\n"
         f.write(txt)     
         """
+        # Check if a table already exists for this module, if not, create the table based on
+        # the schema of the titles
+        
+        query = "DESC "+module.upper()
+        c.execute(query)
+        result = c.fetchall()
+        
+        
+        if "ERROR" in result:
+        	query = '''CREATE TABLE '''+module.upper()+'''
+        	for title in dfd_fields:
+        		query += title + " VARCHAR(40),"
+        	query += ")"
+        	c.execute(query)
+        		        
         # At the same time update the database too
-        query = '''INSERT INTO '''+machine.upper()+''' VALUES '''+txt
+        query = '''INSERT INTO '''+module.upper()+''' VALUES '''+txt
 		c.execute(query)
 	f.close()
     c.close()
