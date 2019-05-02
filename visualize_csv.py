@@ -39,7 +39,12 @@ def generate_graph():
             row = line.split(',').remove('\n')
             match_batch_nums[m04[11]] = m04[17]
             
+        # Match batch numbers and find values of interest for analysis
+        # At the same time save only these two values for each part in a CSV file
         
+        f = open(save_folder+part_type+".csv", "w")
+		f.write("M052 - Quality Measuring MM after joining without load, M06 - P Offset A 1st run\n")
+		txt = ""
         for line in m052:
             row1 = line.split(',').remove('\n')
             # The batch number of the record is at position 18, find it in the dictionary
@@ -47,6 +52,7 @@ def generate_graph():
             # The value we're interested in, "Quality Measuring MM after joining without load"
             # is at position 100 in the list, append it to the data to be graphed
             mm_without_load.append(row1[100])
+            txt += row1[100] + ','
             
             # Also iterate through m06 at the same time and 
             for li in m06:
@@ -58,6 +64,9 @@ def generate_graph():
                     # The value we're interested in, "P_Offset_A_1st_run"
                     # is at position 56 in the list, append it to the data to be graphed
                     mm_with_load.append(row2[56])
+                    txt += row2[56] + '\n'
+                    f.write(txt)
+        f.close()            
         
         data = [[mm_with_load[i],mm_without_load[i]] for i in range(len(mm_with_load))]
         df = pd.DataFrame(data, columns = ['mm_with_load', 'mm_without_load']) 
