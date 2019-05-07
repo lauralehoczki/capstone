@@ -147,7 +147,6 @@ P052QualityMeasMMbefJoinNest3 DECIMAL(15),
 Attribute45 SMALLINT,
 P052GradientMM DECIMAL(15),
 Attribute46 SMALLINT,
-PRIMARY KEY (M052_ID),
 CONSTRAINT fk_M052batchnumber
 FOREIGN KEY (M052BatchNumber) REFERENCES M04 (DMC_GearUnit),
 CONSTRAINT b UNIQUE (M052BatchNumber));
@@ -258,7 +257,6 @@ M_TsuRegister_0x19_final_B INT,
 M_TsuRegister_0x1A_final_B INT,
 P_Monitoring_Offset_A DECIMAL(20),
 P_Monitoring_Offset_B DECIMAL(20),
-PRIMARY KEY (M06_ID),
 CONSTRAINT fk_M06batchnumber 
 FOREIGN KEY (M06BatchNumber) REFERENCES M04 (BatchNumber),
 CONSTRAINT c UNIQUE (M06BatchNumber));
