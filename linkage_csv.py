@@ -78,17 +78,17 @@ def create_CSV_FULL(machine,module,filetype,part_type):
 				DATA.append(lines)
               
 ##############################################################################################################################
-	"""
-	# Establish connection to Oracle database
-	dsn_tns = cx_Oracle.makedsn('Host Name', 'Port Number', service_name='Service Name')
-	conn = cx_Oracle.connect(user=r'User Name', password='Personal Password', dsn=dsn_tns)
+	
+	# # Establish connection to Oracle database
+	# dsn_tns = cx_Oracle.makedsn('Host Name', 'Port Number', service_name='Service Name')
+	# conn = cx_Oracle.connect(user=r'User Name', password='Personal Password', dsn=dsn_tns)
 
-	# set up the cursor
-	try:
-		c = conn.cursor()
-	except:
-		print("Unable to connect to the database")
-	"""
+	# # set up the cursor
+	# try:
+		# c = conn.cursor()
+	# except:
+		# print("Unable to connect to the database")
+	
 ####################################################################################################
 
 	# generate CSV file
@@ -108,14 +108,14 @@ def create_CSV_FULL(machine,module,filetype,part_type):
 			txt+=(fields+",")
 		txt+="\n"
 		f.write(txt)
-        """
-		# At the same time update the database too
-		query = '''INSERT INTO '''+machine.upper()+''' VALUES '''+txt
-		c.execute(query)
-	f.close()
-    c.close()
-    vis.visualize_data()
-	"""
+    # 
+		# # At the same time update the database too
+		# query = '''INSERT INTO '''+machine.upper()+''' VALUES '''+txt
+		# c.execute(query)
+	# f.close()
+    # c.close()
+    # vis.visualize_data()
+	# 
 	return
 
 # above is function definition
@@ -123,5 +123,4 @@ def create_CSV_FULL(machine,module,filetype,part_type):
 # below is execution
 
 #test m04
-create_CSV_FULL("M2002","m04","bd","944436")
-create_CSV_FULL("M2002","m04","bd","950111")
+create_CSV_FULL("M2002","m04","bd","946148")

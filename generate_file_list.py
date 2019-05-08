@@ -6,8 +6,7 @@
 ######### DATA_PATH + machine\\module\\subdir\\ZG\\*.dfd
 ######### DATA_PATH   = "C:\\Stats_machine\\DATAS_MACHINES\\m"
 
-#DATA_PATH = "Q:\\Process\\Steering\\"
-DATA_PATH = "C:\\Users\\supplier_admin\\Desktop\\Steering\\"
+DATA_PATH = "T:\\steering\\"
 
 import os
 import glob

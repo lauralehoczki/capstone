@@ -6,7 +6,7 @@ import cgi, cgitb
 cgitb.enable()
 import sys, os
 import codecs
-#import cx_Oracle
+import cx_Oracle
 #import visualize_data as vis
 sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
 
@@ -14,9 +14,11 @@ import parse_dfb_dfd as parser
 import generate_file_list as file_list
 
 # Authentication information for database connection
-user = 'sys'
+user = 'sysdba'
 pw = 'oracle'
 server = 'orc1'
+hostname = 'j4m8888'
+portnum = 1521
 
 ##############################################################################################################################
 # INPUT:    a list of data titles, a specific title
@@ -60,25 +62,23 @@ def create_CSV_FULL(machine,module,filetype,part_type):
             MSN_position, DATETIME_position  = find_field_in_dfd_MSN_DATETIME(dfd_fields)
             if MSN_position!=9999 and DATETIME_position !=9999:
                 for lines in dfb_fields:
-                    # print(dfd_fields)
-                    # print(lines)
                     DATA.append(lines)
             else:
                 print("1_Errors occured while parsing : ", files)
         else:
             print("2_Errors occured while parsing : ", files)
 #################################################################################################
-	"""
+    """
 	# Establish connection to Oracle database
-	dsn_tns = cx_Oracle.makedsn('Host Name', 'Port Number', service_name='Service Name')
-	conn = cx_Oracle.connect(user=r'User Name', password='Personal Password', dsn=dsn_tns)
+    dsn_tns = cx_Oracle.makedsn(hostname, portnum, server)
+    conn = cx_Oracle.connect(user,pw,dsn_tns)
 
 	# set up the cursor
-	try:
-		c = conn.cursor()
-	except:
-		print("Unable to connect to the database")
-	"""
+    try:
+        c = conn.cursor()
+    except:
+        print("Unable to connect to the database")
+    """
 #################################################################################################
     # generating CSV file
     # before this step we should have a list called DATA containing all the data
@@ -93,14 +93,15 @@ def create_CSV_FULL(machine,module,filetype,part_type):
     for row in DATA:
         # print("row: ",row)
         txt = ""
-        for fields in row:
-            txt+=(fields+",")
+        for fields in range(len(row)-1):
+            txt+=("'"+row[fields]+"',")
+        txt+=row[-1]
         txt+="\n"
         f.write(txt)     
-        """
+    
         # Check if a table already exists for this module, if not, create the table based on
         # the schema of the titles
-        
+        """
         query = "DESC "+module.upper()
         c.execute(query)
         result = c.fetchall()
@@ -112,14 +113,14 @@ def create_CSV_FULL(machine,module,filetype,part_type):
         		query += title + " VARCHAR(40),"
         	query += ")"
         	c.execute(query)
-        		        
+                
         # At the same time update the database too
-        query = '''INSERT INTO '''+module.upper()+''' VALUES '''+txt
-		c.execute(query)
-	f.close()
+        query = '''INSERT INTO '''+module.upper()+''' VALUES('''+txt+''')'''
+        c.execute(query)
+    f.close()
     c.close()
-    vis.visualize_data()
-    """
+    """	
+    #vis.visualize_data()
 
     return
 
@@ -127,10 +128,9 @@ def create_CSV_FULL(machine,module,filetype,part_type):
 ##############################################################################################################################
 # below is execution
 
+create_CSV_FULL("M1998","m052","pc","872221")
+#create_CSV_FULL("M1998","m052","pc","852133")
 
-#create_CSV_FULL("M1998","m052","pc","950273")
-#create_CSV_FULL("M1998","m052","pc","944436")
-#create_CSV_FULL("M1998","m052","pc","888878")
 # MAIN **********************************************
 # def main():
 #     threading.Timer(300.0, main).start()

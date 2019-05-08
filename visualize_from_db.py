@@ -9,8 +9,7 @@ import cgi, cgitb
 cgitb.enable()
 import sys, os
 import codecs
-import datetime
-#import cx_Oracle
+import cx_Oracle
 import pandas as pd
 import seaborn as sns 
 sns.set(color_codes=True)
@@ -76,9 +75,6 @@ def visualize_data():
     last_analyzed.write(result)
     last_analyzed.close()
     
-    # The filename is going to be the time it was created
-    currentDT = datetime.datetime.now()
-    fig_name = currentDT.strftime("%H:%M:%S")
     # fig.savefig(save_folder + fig_name + ".png")
     plt.savefig(save_folder + fig_name + ".png")
 
