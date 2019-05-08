@@ -6,6 +6,7 @@ WARNING: This method is significantly slower then the database method
 import glob, os
 import seaborn as sns 
 sns.set(color_codes=True)
+import matplotlib.pyplot as plt
 import pandas as pd
 
 save_folder = "C:\\Users\\supplier_admin\\Desktop\\Analysis\\"
@@ -68,16 +69,19 @@ def generate_graph():
                     f.write(txt)
         f.close()            
         
-        data = [[mm_with_load[i],mm_without_load[i]] for i in range(len(mm_with_load))]
-        df = pd.DataFrame(data, columns = ['mm_with_load', 'mm_without_load']) 
+        # data = [[mm_with_load[i],mm_without_load[i]] for i in range(len(mm_with_load))]
+        # df = pd.DataFrame(data, columns = ['mm_with_load', 'mm_without_load']) 
 
-        ax = sns.regplot(x=df.mm_with_load, y=df.mm_without_load, color="b")
-        fig = ax.get_figure()
+        # ax = sns.regplot(x=df.mm_with_load, y=df.mm_without_load, color="b")
+        # fig = ax.get_figure()
+        plt.scatter(mm_with_load, mm_without_load)
         
         # The filename is going to be the time it was created
         currentDT = datetime.datetime.now()
         fig_name = currentDT.strftime("%H:%M:%S")
-        fig.savefig(save_folder + fig_name + ".png")
+        
+        # fig.savefig(save_folder + fig_name + ".png")
+        plt.savefig(save_folder + fig_name + ".png")
     else:
         print("This part type has insufficient data")
     

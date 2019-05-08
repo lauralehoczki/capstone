@@ -59,11 +59,13 @@ def visualize_data():
         mm_without_load.append(float(row[1]))
         
     
-    data = [[mm_with_load[i],mm_without_load[i]] for i in range(len(mm_with_load))]
-    df = pd.DataFrame(data, columns = ['mm_with_load', 'mm_without_load']) 
+    # data = [[mm_with_load[i],mm_without_load[i]] for i in range(len(mm_with_load))]
+    # df = pd.DataFrame(data, columns = ['mm_with_load', 'mm_without_load']) 
 
-    ax = sns.regplot(x=df.mm_with_load, y=df.mm_without_load, color="b")
-    fig = ax.get_figure()
+    # ax = sns.regplot(x=df.mm_with_load, y=df.mm_without_load, color="b")
+    # fig = ax.get_figure()
+    plt.scatter(mm_with_load, mm_without_load)
+    
 
     # Update the last analyzed record's row number
     query = "SELECT MAX(ROWNUM) FROM " + machine.upper()
@@ -77,6 +79,7 @@ def visualize_data():
     # The filename is going to be the time it was created
     currentDT = datetime.datetime.now()
     fig_name = currentDT.strftime("%H:%M:%S")
-    fig.savefig(save_folder + fig_name + ".png")
+    # fig.savefig(save_folder + fig_name + ".png")
+    plt.savefig(save_folder + fig_name + ".png")
 
 visualize_data()
