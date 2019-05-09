@@ -13,10 +13,11 @@ import linkage_parser as parser
 import generate_file_list as file_list
 
 # Authentication information for database connection
-user = 'sys'
+user = 'sysdba'
 pw = 'oracle'
 server = 'orc1'
-
+hostname = 'j4m8888'
+portnum = '1521'
 
 ##############################################################################################################################
 # INPUT:	a list of data titles, a specific title
@@ -79,9 +80,9 @@ def create_CSV_FULL(machine,module,part_type):
               
 ##############################################################################################################################
 	
-	# # Establish connection to Oracle database
-	# conn = cx_Oracle.connect(user=r'User Name', password='Personal Password', dsn=dsn_tns)
-	
+	# Establish connection to Oracle database
+	#conn = cx_Oracle.connect(user,pw,hostname+':'+portnum+'/'+server, cx_Oracle.SYSDBA)
+	#c = conn.cursor()
 ####################################################################################################
 
 	# generate CSV file
@@ -98,15 +99,17 @@ def create_CSV_FULL(machine,module,part_type):
 		# print("row: ",row)
 		txt = ""
 		for fields in row:
-			txt+=(fields+",")
+			txt+=("'"+fields+"',")
+		
+		# At the same time update the database too
+		#query = '''INSERT INTO '''+machine.upper()+''' VALUES('''+txt+''')'''
+		#c.execute(query)
+		
 		txt+="\n"
 		f.write(txt)
-    # 
-		# At the same time update the database too
-		query = '''INSERT INTO '''+machine.upper()+''' VALUES '''+txt
-		c.execute(query)
+
 	f.close()
-    	c.close()
+    	#c.close()
 
 	return
 
