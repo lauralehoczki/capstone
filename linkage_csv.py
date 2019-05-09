@@ -6,8 +6,7 @@ import cgi, cgitb
 cgitb.enable()
 import sys, os
 import codecs
-#import cx_Oracle
-#import visualize_data as vis
+import cx_Oracle
 sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
 
 import linkage_parser as parser
@@ -17,6 +16,7 @@ import generate_file_list as file_list
 user = 'sys'
 pw = 'oracle'
 server = 'orc1'
+
 
 ##############################################################################################################################
 # INPUT:	a list of data titles, a specific title
@@ -80,14 +80,7 @@ def create_CSV_FULL(machine,module,part_type):
 ##############################################################################################################################
 	
 	# # Establish connection to Oracle database
-	# dsn_tns = cx_Oracle.makedsn('Host Name', 'Port Number', service_name='Service Name')
 	# conn = cx_Oracle.connect(user=r'User Name', password='Personal Password', dsn=dsn_tns)
-
-	# # set up the cursor
-	# try:
-		# c = conn.cursor()
-	# except:
-		# print("Unable to connect to the database")
 	
 ####################################################################################################
 
@@ -109,13 +102,12 @@ def create_CSV_FULL(machine,module,part_type):
 		txt+="\n"
 		f.write(txt)
     # 
-		# # At the same time update the database too
-		# query = '''INSERT INTO '''+machine.upper()+''' VALUES '''+txt
-		# c.execute(query)
-	# f.close()
-    # c.close()
-    # vis.visualize_data()
-	# 
+		# At the same time update the database too
+		query = '''INSERT INTO '''+machine.upper()+''' VALUES '''+txt
+		c.execute(query)
+	f.close()
+    	c.close()
+
 	return
 
 # above is function definition
@@ -123,4 +115,4 @@ def create_CSV_FULL(machine,module,part_type):
 # below is execution
 
 #test m04
-create_CSV_FULL("M2002","m04","bd")
+#create_CSV_FULL("M2002","m04","bd")
