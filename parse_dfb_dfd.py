@@ -116,6 +116,11 @@ def dfd_dfb_parsing(dfd_file):
                     # plus, some .dfx files don't have this data title
                     # so we just skip it
                     continue
+                if line[0:5] == "K1013":
+                    # this title doesn't appear in the example file
+                    # plus, some .dfx files don't have this data title
+                    # so we just skip it
+                    continue
                 dfd_fields.append(line[0:5])
                 first_fields.append(line[6:-1])
                 difference = difference + 1

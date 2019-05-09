@@ -14,9 +14,9 @@ import platform
 import datetime
 
 # record the last time we dealt with the incoming data in a file so it persists
-timestamp_path = "C:\\Users\\supplier_admin\\Desktop\\CSV\\timestamp.txt"
+timestamp_path = "C:\\Users\\supplier_admin\\Desktop\\timestamp.txt"
 timestamp = open(timestamp_path,"r")
-last_time_stamp = float(timestamp.readline().replace('\n',''))
+last_time_stamp = float(timestamp.readline().strip('\n'))
 timestamp.close()
 
 ##############
@@ -24,18 +24,16 @@ timestamp.close()
 # RETURN:   a list of new files in the target directory
 # NOTE:     many of them are old files, we'll have to find the new ones
 def retrieve_new_file(machine, module, part_type):
-    part_list = glob.glob(machine+"\\"+module+"\\"+part_type+"\\*")
+    part_list = glob.glob(DATA_PATH+machine+"\\"+module+"\\"+part_type+"\\*")
+    print(part_list)
 
     # selecting the new files by looking at their creation dates
     final_list = []
     for path in part_list:
         temp_list = retrieve_new_file_from_part(path)
         final_list.extend(temp_list)
-    
-    #Record new current timestamp before exiting the file list generator
-    timestamp = open(timestamp_path,"w")
-    timestamp.write(str(os.path.getctime(timestamp_path)))
-    timestamp.close()
+
+    #print(final_list)
     return final_list
 
 ##############################################################################################################################
@@ -51,15 +49,16 @@ def retrieve_new_file(machine, module, part_type):
 # RETURN:	a list of new files in the target directory
 # NOTE:		many of them are old files, we'll have to find the new ones
 def retrieve_new_file_from_part(path):
-    path_list_raw = glob.glob(DATA_PATH+path+"\\*.dfd")
+    path_list_raw = glob.glob(path+"\\19*.dfd")
+    #print(path_list_raw)
 
     # selecting the new files by looking at their creation dates
     path_list = []
     for i in path_list_raw:
-        if path_list_raw.index(i)==0:
-            print("Last time stamp: "+str(last_time_stamp))
-            print("Current time stamp: "+str(os.path.getctime(i)))
-            print(is_new(i))
+        # if path_list_raw.index(i)==0:
+            # print("Last time stamp: "+str(last_time_stamp))
+            # print("Current time stamp: "+str(os.path.getctime(i)))
+            # print(is_new(i))
         if (is_new(i)):
             path_list.append(i)
     
