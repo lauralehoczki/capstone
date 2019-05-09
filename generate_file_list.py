@@ -14,10 +14,10 @@ import platform
 import datetime
 
 # record the last time we dealt with the incoming data in a file so it persists
-# timestamp_path = "C:\\Users\\supplier_admin\\Desktop\\CSV\\timestamp.txt"
-# timestamp = open(timestamp_path,"r")
-# last_time_stamp = float(timestamp.readline().replace('\n',''))
-# timestamp.close()
+timestamp_path = "C:\\Users\\supplier_admin\\Desktop\\CSV\\timestamp.txt"
+timestamp = open(timestamp_path,"r")
+last_time_stamp = float(timestamp.readline().replace('\n',''))
+timestamp.close()
 
 ##############
 # INPUT:    directory information
