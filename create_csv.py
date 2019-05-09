@@ -6,8 +6,6 @@ import cgi, cgitb
 cgitb.enable()
 import sys, os
 import codecs
-import cx_Oracle
-#import visualize_data as vis
 sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
 
 import parse_dfb_dfd as parser

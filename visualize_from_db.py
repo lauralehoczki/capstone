@@ -11,28 +11,29 @@ import sys, os
 import codecs
 import cx_Oracle
 import pandas as pd
-import seaborn as sns 
-sns.set(color_codes=True)
+#import seaborn as sns 
+#sns.set(color_codes=True)
 sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
 
-# Authentication information for Oracle
-user = 'sys'
-password = 'oracle'
+# Authentication information for database connection
+user = 'sysdba'
+pw = 'oracle'
 server = 'orc1'
+hostname = 'j4m8888'
+portnum = '1521'
+
 
 # Location for analysis graphs
 save_folder = "C:\\Users\\supplier_admin\\Desktop\\Analysis\\"
 last_analyzed = open(save_folder+"last_rownum.txt","r")
-last_analyzed_row = last_analyzed.readline().replace('\n', '')
+last_analyzed_row = last_analyzed.readline().remove('\n')
 last_analyzed.close()
 
 def visualize_data():
-    # Establish connection to Oracle database
-    dsn_tns = cx_Oracle.makedsn('Host Name', 'Port Number', service_name='Service Name')
-    conn = cx_Oracle.connect(user, password, dsn=dsn_tns)
+	# Establish connection to Oracle database
+	conn = cx_Oracle.connect(user,pw,hostname+':'+portnum+'/'+server, cx_Oracle.SYSDBA)
 
-    # set up the cursor
-    c = conn.cursor()
+	c = conn.cursor()
 
     # create the query (as a string)
     query = '''SELECT M06.P_Offset_A_1st_run,

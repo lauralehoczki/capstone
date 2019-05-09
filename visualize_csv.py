@@ -3,20 +3,20 @@ This program enables the user to graph the offset from selected csv's instead of
 all new data from the database
 WARNING: This method is significantly slower then the database method
 """
-import glob, os, path
 #import seaborn as sns 
-#sns.set(color_codes=True)
+#sns.set(color_codes=True)import glob, os, path
 import matplotlib.pyplot as plt
 import pandas as pd
+import datetime
 
 save_folder = "C:\\Users\\supplier_admin\\Desktop\\Analysis\\"
 DATA_PATH = "C:\\Users\\supplier_admin\\Desktop\\CSV\\"
 
 def generate_graph():
-    part_type = input("Part type to run correlation on: ")
-    m052_path = DATA_PATH + "M1998_m052_" + part_type + ".csv"
-    m04_path = DATA_PATH + "M2002_m04_" + part_type + ".csv"
-    m06_path = DATA_PATH + "M2002_m06_" + part_type + ".csv"
+    date = input("Date of machine data to analyze (YYYY-MM-DD): ")
+    m052_path = DATA_PATH + "M1998_m052_" + date + ".csv"
+    m04_path = DATA_PATH + "M2002_m04_" + date + ".csv"
+    m06_path = DATA_PATH + "M2002_m06_" + date + ".csv"
     try:
         m04file = open(m04_path, 'r')
         m06file = open(m06_path, 'r')
@@ -78,6 +78,6 @@ def generate_graph():
     # fig.savefig(save_folder + fig_name + ".png")
     plt.savefig(save_folder + part_type + ".png")   
     except:
-        print("This part type has insufficient data")
+        print("An error occurred")
         
 generate_graph()
