@@ -16,7 +16,10 @@ def main():
 	    job_file = open(JOB_PATH, "r")
 	    for line in job_file:
 	    	info_list = line.split(",")
-	    	pc_csv.create_CSV_FULL(info_list[0], info_list[1], info_list[2])
+	    	if info_list[2] == "pc":
+		    	pc_csv.create_CSV_FULL(info_list[0], info_list[1], info_list[2])
+	    	if info_list[2] == "bd":
+		    	bd_csv.create_CSV_FULL(info_list[0], info_list[1], info_list[2])
 
 	    # part_lis = glob.glob("M2002/m06/pc")
 	    # for part in part_lis:

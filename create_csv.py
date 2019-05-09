@@ -42,12 +42,12 @@ def find_field_in_dfd_MSN_DATETIME(dfd):
 ##############################################################################################################################
 # INPUT:    directory information
 # RETURN:   nothing, but create the final .csv file in the specified directory
-def create_CSV_FULL(machine,module,filetype):
+def create_CSV_FULL(machine,module,part_type):
     dfd_fields          = []
     dfb_fields          = []
     additionnal_fields  = []
 
-    print("Generating file for "+machine+"/"+module+" for part type: ")
+    print("Generating file for "+machine+"/"+module+"/"+part_type)
 
     DATA = []
     
@@ -83,7 +83,7 @@ def create_CSV_FULL(machine,module,filetype):
     # generating CSV file
     # before this step we should have a list called DATA containing all the data
     # the following step is trivial, not as important as the last one
-    f = open("C:\\Users\\supplier_admin\\Desktop\\CSV\\"+machine+"_"+module+".csv", "w")
+    f = open("C:\\Users\\supplier_admin\\Desktop\\CSV\\"+machine+"_"+module+"_"+part_type+".csv", "w")
     txt = ""
     for title in dfd_fields:
         # print("title: ", title)
