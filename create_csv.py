@@ -6,6 +6,7 @@ import cgi, cgitb
 cgitb.enable()
 import sys, os
 import codecs
+import cx_Oracle
 sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
 
 import parse_dfb_dfd as parser
@@ -16,7 +17,7 @@ user = 'sysdba'
 pw = 'oracle'
 server = 'orc1'
 hostname = 'j4m8888'
-portnum = 1521
+portnum = '1521'
 
 ##############################################################################################################################
 # INPUT:    a list of data titles, a specific title
@@ -66,17 +67,11 @@ def create_CSV_FULL(machine,module,part_type):
         else:
             print("2_Errors occured while parsing : ", files)
 #################################################################################################
-    """
+    
 	# Establish connection to Oracle database
-    dsn_tns = cx_Oracle.makedsn(hostname, portnum, server)
-    conn = cx_Oracle.connect(user,pw,dsn_tns)
-
-	# set up the cursor
-    try:
-        c = conn.cursor()
-    except:
-        print("Unable to connect to the database")
-    """
+	conn = cx_Oracle.connect(user,pw,hostname+':'+portnum+'/'+server, cx_Oracle.SYSDBA)
+	c = conn.cursor()
+    
 #################################################################################################
     # generating CSV file
     # before this step we should have a list called DATA containing all the data
@@ -99,7 +94,7 @@ def create_CSV_FULL(machine,module,part_type):
     
         # Check if a table already exists for this module, if not, create the table based on
         # the schema of the titles
-        """
+        """ UNCOMMENT below code to enable this functionality
         query = "DESC "+module.upper()
         c.execute(query)
         result = c.fetchall()
@@ -111,23 +106,19 @@ def create_CSV_FULL(machine,module,part_type):
         		query += title + " VARCHAR(40),"
         	query += ")"
         	c.execute(query)
-                
+    	"""           
         # At the same time update the database too
         query = '''INSERT INTO '''+module.upper()+''' VALUES('''+txt+''')'''
         c.execute(query)
     f.close()
     c.close()
-    """	
-    #vis.visualize_data()
-
+    
     return
 
 # above is function definition
 ##############################################################################################################################
 # below is execution
-
-create_CSV_FULL("M1998","m052","pc")
-# create_CSV_FULL("M1998","m052","pc","852133")
+# Uncomment below if you want to run script automatically every 5 minutes
 
 # MAIN **********************************************
 # def main():
