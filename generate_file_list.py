@@ -24,7 +24,7 @@ timestamp.close()
 # RETURN:   a list of new files in the target directory
 # NOTE:     many of them are old files, we'll have to find the new ones
 def retrieve_new_file(machine, module, part_type):
-    part_list = glob.glob(DATA_PATH+machine+"\\"+module+"\\"+part_type+"\\*")
+    part_list = glob.glob(machine+"\\"+module+"\\"+part_type+"\\*")
 
     # selecting the new files by looking at their creation dates
     final_list = []
