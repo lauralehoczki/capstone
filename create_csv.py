@@ -42,17 +42,17 @@ def find_field_in_dfd_MSN_DATETIME(dfd):
 ##############################################################################################################################
 # INPUT:    directory information
 # RETURN:   nothing, but create the final .csv file in the specified directory
-def create_CSV_FULL(machine,module,filetype,part_type):
+def create_CSV_FULL(machine,module,filetype):
     dfd_fields          = []
     dfb_fields          = []
     additionnal_fields  = []
 
-    print("Generating file for "+machine+"/"+module+" for part type: "+part_type)
+    print("Generating file for "+machine+"/"+module+" for part type: ")
 
     DATA = []
     
     # create a list of file names (fullname) in increasing order
-    dfd_filelist = file_list.retrieve_new_file(machine,module,filetype,part_type)
+    dfd_filelist = file_list.retrieve_new_file(machine,module,part_type)
     # print(dfd_filelist)
     for files in dfd_filelist:
         # parsing .dfd and .dfb/.dfx file and mounting them
@@ -83,7 +83,7 @@ def create_CSV_FULL(machine,module,filetype,part_type):
     # generating CSV file
     # before this step we should have a list called DATA containing all the data
     # the following step is trivial, not as important as the last one
-    f = open("C:\\Users\\supplier_admin\\Desktop\\CSV\\"+machine+"_"+module+"_"+part_type+".csv", "w")
+    f = open("C:\\Users\\supplier_admin\\Desktop\\CSV\\"+machine+"_"+module+".csv", "w")
     txt = ""
     for title in dfd_fields:
         # print("title: ", title)
@@ -128,8 +128,8 @@ def create_CSV_FULL(machine,module,filetype,part_type):
 ##############################################################################################################################
 # below is execution
 
-create_CSV_FULL("M1998","m052","pc","872221")
-#create_CSV_FULL("M1998","m052","pc","852133")
+create_CSV_FULL("M1998","m052","pc")
+# create_CSV_FULL("M1998","m052","pc","852133")
 
 # MAIN **********************************************
 # def main():

@@ -14,10 +14,29 @@ import platform
 import datetime
 
 # record the last time we dealt with the incoming data in a file so it persists
-timestamp_path = "C:\\Users\\supplier_admin\\Desktop\\CSV\\timestamp.txt"
-timestamp = open(timestamp_path,"r")
-last_time_stamp = float(timestamp.readline().replace('\n',''))
-timestamp.close()
+# timestamp_path = "C:\\Users\\supplier_admin\\Desktop\\CSV\\timestamp.txt"
+# timestamp = open(timestamp_path,"r")
+# last_time_stamp = float(timestamp.readline().replace('\n',''))
+# timestamp.close()
+
+##############
+# INPUT:    directory information
+# RETURN:   a list of new files in the target directory
+# NOTE:     many of them are old files, we'll have to find the new ones
+def retrieve_new_file(machine, module, part_type):
+    part_list = glob.glob(DATA_PATH+machine+"\\"+module+"\\"+part_type+"\\*")
+
+    # selecting the new files by looking at their creation dates
+    final_list = []
+    for path in part_list:
+        temp_list = retrieve_new_file_from_part(path)
+        final_list.extend(temp_list)
+    
+    #Record new current timestamp before exiting the file list generator
+    timestamp = open(timestamp_path,"w")
+    timestamp.write(str(os.path.getctime(timestamp_path)))
+    timestamp.close()
+    return final_list
 
 ##############################################################################################################################
 # glob module finds all pathnames matching a specified pattern
@@ -31,8 +50,8 @@ timestamp.close()
 # INPUT:	directory information
 # RETURN:	a list of new files in the target directory
 # NOTE:		many of them are old files, we'll have to find the new ones
-def retrieve_new_file(machine, module, subdir, part_type):
-    path_list_raw = glob.glob(DATA_PATH+machine+"\\"+module+"\\"+subdir+"\\"+part_type+"\\*.dfd")
+def retrieve_new_file_from_part(path):
+    path_list_raw = glob.glob(DATA_PATH+path+"\\*.dfd")
 
     # selecting the new files by looking at their creation dates
     path_list = []
@@ -45,9 +64,6 @@ def retrieve_new_file(machine, module, subdir, part_type):
             path_list.append(i)
     
     #Record new current timestamp before exiting the file list generator
-    timestamp = open(timestamp_path,"w")
-    timestamp.write(str(os.path.getctime(timestamp_path)))
-    timestamp.close()
     return path_list
 
 ##############################################################################################################################
