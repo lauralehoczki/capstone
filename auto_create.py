@@ -11,9 +11,18 @@ def main():
 		# we can change it to whatever we want
 	    threading.Timer(300.0, main).start()
 	    print("Start : %s" % time.ctime())
-	    # create_CSV_FULL("M1998","m052","pc","888878")
-	    # create_CSV_FULL("M1998","m052","pc","950273")
 	    time.sleep(2)
+	    # ********************************************************************
+	    job_file = open(JOB_PATH, "r")
+	    for line in job_file:
+	    	info_list = line.split(",")
+	    	pc_csv.create_CSV_FULL(info_list[0], info_list[1], info_list[2])
+
+	    # part_lis = glob.glob("M2002/m06/pc")
+	    # for part in part_lis:
+	    # 	pc_csv.create_CSV_FULL("M2002","m06","pc",part)
+
+	    # ********************************************************************
 	    print("End : %s" % time.ctime())
 	    print()
 
