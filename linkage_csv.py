@@ -79,10 +79,10 @@ def create_CSV_FULL(machine,module,part_type):
 				DATA.append(lines)
               
 ##############################################################################################################################
-	
-	# Establish connection to Oracle database
-	#conn = cx_Oracle.connect(user,pw,hostname+':'+portnum+'/'+server, cx_Oracle.SYSDBA)
-	#c = conn.cursor()
+	try:
+		# Establish connection to Oracle database
+		conn = cx_Oracle.connect(user,pw,hostname+':'+portnum+'/'+server, cx_Oracle.SYSDBA)
+		c = conn.cursor()
 ####################################################################################################
 
 	# generate CSV file
@@ -101,15 +101,17 @@ def create_CSV_FULL(machine,module,part_type):
 		for fields in row:
 			txt+=("'"+fields+"',")
 		
-		# At the same time update the database too
-		#query = '''INSERT INTO '''+machine.upper()+''' VALUES('''+txt+''')'''
-		#c.execute(query)
+		try:
+		#At the same time update the database too
+			query = '''INSERT INTO '''+machine.upper()+''' VALUES('''+txt+''')'''
+			c.execute(query)
 		
 		txt+="\n"
 		f.write(txt)
 
 	f.close()
-    	#c.close()
+    	try:
+		c.close()
 
 	return
 
