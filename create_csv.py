@@ -67,7 +67,7 @@ def create_CSV_FULL(machine,module,part_type):
         else:
             print("2_Errors occured while parsing : ", files)
 #################################################################################################
-    
+     try:
 	# Establish connection to Oracle database
 	conn = cx_Oracle.connect(user,pw,hostname+':'+portnum+'/'+server, cx_Oracle.SYSDBA)
 	c = conn.cursor()
@@ -94,7 +94,8 @@ def create_CSV_FULL(machine,module,part_type):
     
         # Check if a table already exists for this module, if not, create the table based on
         # the schema of the titles
-        """ UNCOMMENT below code to enable this functionality
+	# UNCOMMENT below code to enable this functionality
+        """
         query = "DESC "+module.upper()
         c.execute(query)
         result = c.fetchall()
@@ -106,10 +107,11 @@ def create_CSV_FULL(machine,module,part_type):
         		query += title + " VARCHAR(40),"
         	query += ")"
         	c.execute(query)
-    	"""           
-        # At the same time update the database too
-        query = '''INSERT INTO '''+module.upper()+''' VALUES('''+txt+''')'''
-        c.execute(query)
+    	""" 
+	try:
+        	# At the same time update the database too
+        	query = '''INSERT INTO '''+module.upper()+''' VALUES('''+txt+''')'''
+        	c.execute(query)
     f.close()
     c.close()
     
