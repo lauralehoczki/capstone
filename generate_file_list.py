@@ -6,8 +6,6 @@
 ######### DATA_PATH + machine\\module\\subdir\\ZG\\*.dfd
 ######### DATA_PATH   = "C:\\Stats_machine\\DATAS_MACHINES\\m"
 
-DATA_PATH = "T:\\steering\\"
-
 import os
 import glob
 import platform
@@ -23,18 +21,24 @@ timestamp.close()
 # INPUT:    directory information
 # RETURN:   a list of new files in the target directory
 # NOTE:     many of them are old files, we'll have to find the new ones
-def retrieve_new_file(machine, module, part_type):
-    part_list = glob.glob(DATA_PATH+machine+"\\"+module+"\\"+part_type+"\\*")
-    #print(part_list)
+def retrieve_new_file(drive,machine, module, part_type):
+	DATA_PATH = drive + ":\\steering\\"
+	DATA_PATH2 = drive + ":\\Steering\\"
+	# there is a diffrerence is spelling (upper/lower case)
+	part_list = glob.glob(DATA_PATH+machine+"\\"+module+"\\"+part_type+"\\*")
+	part_list.extend(glob.glob(DATA_PATH2+machine+"\\"+module+"\\"+part_type+"\\*"))
+	#print(part_list)
 
-    # selecting the new files by looking at their creation dates
-    final_list = []
-    for path in part_list:
-        temp_list = retrieve_new_file_from_part(path)
-        final_list.extend(temp_list)
+	# selecting the new files by looking at their creation dates
+	final_list = []
+	for path in part_list:
+		#print(path)
+		temp_list = retrieve_new_file_from_part(path)
+		#print(temp_list)
+		final_list.extend(temp_list)
 
-    #print(final_list)
-    return final_list
+	#print(final_list)
+	return final_list
 
 ##############################################################################################################################
 # glob module finds all pathnames matching a specified pattern
@@ -49,36 +53,36 @@ def retrieve_new_file(machine, module, part_type):
 # RETURN:	a list of new files in the target directory
 # NOTE:		many of them are old files, we'll have to find the new ones
 def retrieve_new_file_from_part(path):
-    path_list_raw = glob.glob(path+"\\*.dfd")
-    #print(path_list_raw)
+	path_list_raw = glob.glob(path+"\\19*.dfd")
+	#print(path_list_raw)
 
-    # selecting the new files by looking at their creation dates
-    path_list = []
-    for i in path_list_raw:
-        # if path_list_raw.index(i)==0:
-            # print("Last time stamp: "+str(last_time_stamp))
-            # print("Current time stamp: "+str(os.path.getctime(i)))
-            # print(is_new(i))
-        if (is_new(i)):
-            path_list.append(i)
+	# selecting the new files by looking at their creation dates
+	path_list = []
+	for i in path_list_raw:
+		# if path_list_raw.index(i)==0:
+			# print("Last time stamp: "+str(last_time_stamp))
+			# print("Current time stamp: "+str(os.path.getctime(i)))
+			# print(is_new(i))
+		if (is_new(i)):
+			path_list.append(i)
     
-    #Record new current timestamp before exiting the file list generator
-    return path_list
+	#Record new current timestamp before exiting the file list generator
+	return path_list
 
 ##############################################################################################################################
-    # From Wikipedia
-    """
-    A timestamp is a sequence of characters or encoded information 
-    identifying when a certain event occurred, 
-    usually giving date and time of day, 
-    sometimes accurate to a small fraction of a second
-    """
-    """
-    os.path.getctime() will give us a time stamp looking like:
-            1551348525.5509124
-    the bigger the time stamp is, the older the file is
-    so we can locate new files by comparing the time stamp
-    """
+	# # From Wikipedia
+	# """
+	# A timestamp is a sequence of characters or encoded information 
+	# identifying when a certain event occurred, 
+	# usually giving date and time of day, 
+	# sometimes accurate to a small fraction of a second
+	# """
+	# """
+	# os.path.getctime() will give us a time stamp looking like:
+			# 1551348525.5509124
+	# the bigger the time stamp is, the older the file is
+	# so we can locate new files by comparing the time stamp
+	# """
 # INPUT:	full file name including the path
 # RETURN:	True if it's a new file, false otherwise
 def is_new(path_to_file):
